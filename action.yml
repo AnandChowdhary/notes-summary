@@ -1,5 +1,5 @@
-name: "Events README"
-description: "🗓 Generate a README.md summary for your events repository"
+name: "Notes Summary README"
+description: "🗒️ Generate a README.md summary for your notes repository"
 author: "Anand Chowdhary <https://github.com/AnandChowdhary>"
 runs:
   using: "node12"
