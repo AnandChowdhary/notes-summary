@@ -1,12 +1,12 @@
-# 🗓 Events Summary GitHub Action
+# 🗓 Notes Summary GitHub Action
 
-This GitHub Action generates a `README.md` summary for your events repository. You can use the repository as a source of truth for the events you participate it.
+This GitHub Action generates a `README.md` summary for your notes repository. You can use the workflow to generate a list of items in your repository.
 
-[![Build CI](https://github.com/AnandChowdhary/events-summary/workflows/Build%20CI/badge.svg)](https://github.com/AnandChowdhary/events-summary/actions?query=workflow%3A%22Build+CI%22)
-[![Release CI](https://github.com/AnandChowdhary/events-summary/workflows/Release%20CI/badge.svg)](https://github.com/AnandChowdhary/events-summary/actions?query=workflow%3A%22Release+CI%22)
-[![Node CI](https://github.com/AnandChowdhary/events-summary/workflows/Node%20CI/badge.svg)](https://github.com/AnandChowdhary/events-summary/actions?query=workflow%3A%22Node+CI%22)
+[![Build CI](https://github.com/AnandChowdhary/notes-summary/workflows/Build%20CI/badge.svg)](https://github.com/AnandChowdhary/notes-summary/actions?query=workflow%3A%22Build+CI%22)
+[![Release CI](https://github.com/AnandChowdhary/notes-summary/workflows/Release%20CI/badge.svg)](https://github.com/AnandChowdhary/notes-summary/actions?query=workflow%3A%22Release+CI%22)
+[![Node CI](https://github.com/AnandChowdhary/notes-summary/workflows/Node%20CI/badge.svg)](https://github.com/AnandChowdhary/notes-summary/actions?query=workflow%3A%22Node+CI%22)
 
-## 👩‍💻 Getting started 
+## 👩‍💻 Getting started
 
 First, setup your repository with this file structure:
 
@@ -15,18 +15,18 @@ First, setup your repository with this file structure:
 ├── .github
 │   └── workflows
 │       └── readme.yml
-└── events
+└── notes
     ├── 2019
-    │   ├── event-name.md
-    │   └── another-event-name.md
+    │   ├── note-name.md
+    │   └── another-note-name.md
     └── 2020
-        └── a-third-event-name.md
+        └── a-third-note-name.md
 ```
 
-Add the following comment in your `README.md` file. This will be replaced with a summary of the events you've participated it:
+Add the following comment in your `README.md` file. This will be replaced with a summary of the notes you've participated it:
 
 ```html
-<!--events--><!--/events-->
+<!--notes--><!--/notes-->
 ```
 
 Finally, create the GitHub Actions workflow in `.github/workflows/readme.yml`:
@@ -45,13 +45,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Update event summary
-        uses: AnandChowdhary/events-summary@master
+      - name: Update note summary
+        uses: AnandChowdhary/notes-summary@master
         with:
           token: "${{ secrets.GITHUB_TOKEN }}"
 ```
 
-Your `README.md` file should then contains a summary of the events in the `events` directory:
+Your `README.md` file should then contains a summary of the notes in the `notes` directory:
 
 ![Screenshot of README.md](https://user-images.githubusercontent.com/2841780/97774563-e5ca4600-1b7e-11eb-926e-2bf81e4128bc.png)
 

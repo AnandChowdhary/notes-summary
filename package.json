@@ -1,7 +1,7 @@
 {
-  "name": "events-summary",
-  "version": "1.0.1",
-  "description": "Starter for GitHub Actions with TypeScript and automated releases",
+  "name": "notes-summary",
+  "version": "0.0.0",
+  "description": "Generate a summary for the notes in your GitHub repository",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
@@ -10,24 +10,23 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/AnandChowdhary/events-summary.git"
+    "url": "git+https://github.com/AnandChowdhary/notes-summary.git"
   },
   "keywords": [
     "github",
     "github actions",
     "nodejs",
     "typescript",
-    "starter",
-    "events",
+    "notes",
     "readme",
     "readme-generator"
   ],
   "author": "Anand Chowdhary <mail@anandchowdhary.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/AnandChowdhary/events-summary/issues"
+    "url": "https://github.com/AnandChowdhary/notes-summary/issues"
   },
-  "homepage": "https://github.com/AnandChowdhary/events-summary#readme",
+  "homepage": "https://github.com/AnandChowdhary/notes-summary#readme",
   "devDependencies": {
     "@semantic-release/git": "^9.0.0",
     "@types/fs-extra": "^9.0.4",
