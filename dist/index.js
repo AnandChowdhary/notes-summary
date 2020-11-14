@@ -2647,9 +2647,15 @@ const github_1 = __webpack_require__(469);
 const fs_extra_1 = __webpack_require__(226);
 const path_1 = __webpack_require__(622);
 const parseNoteFile = async (owner, repo, octokit, year, file) => {
-    const commits = await octokit.repos.listCommits({ owner, repo, path: `notes/${year}/${file}` });
+    const commits = await octokit.repos.listCommits({
+        owner,
+        repo,
+        path: `notes/${year}/${file}`,
+    });
+    const contents = await fs_extra_1.readFile(path_1.join(".", "notes", year, file), "utf8");
     return {
         slug: file,
+        title: (contents.split("\n").find((line) => line.startsWith("title: ")) || "").replace("title: ", "") || undefined,
         date: new Date(commits.data[0].commit.author.date),
     };
 };
@@ -2680,7 +2686,7 @@ exports.run = async () => {
         let addedYears = [];
         allNotes[year].forEach((note) => {
             const isPast = new Date(note.date).getTime() < new Date().getTime();
-            const text = `${addedYears.includes(year) ? "" : `### ${year}\n\n`}- [\`${note.slug}\`](./notes/${year}/${note.slug}), ${new Date(note.date).toLocaleDateString("en-us", {
+            const text = `${addedYears.includes(year) ? "" : `### ${year}\n\n`}- [${note.title || `\`${note.slug}\``}](./notes/${year}/${note.slug}), ${new Date(note.date).toLocaleDateString("en-us", {
                 year: "numeric",
                 month: "long",
                 day: "numeric",
@@ -2692,13 +2698,13 @@ exports.run = async () => {
             addedYears.push(year);
         });
     });
-    let content = `## 🎤 Summary
+    let content = `## 🌯 Summary
 - ${totalNotes} notes in ${years.length} years
 `;
     if (upcomingNotes.length)
-        content += `## 🔮 Upcoming notes\n\n${upcomingNotes}`;
+        content += upcomingNotes;
     if (pastNotes.length)
-        content += `## 📜 Past notes\n\n${pastNotes}`;
+        content += pastNotes;
     let readmeContents = await fs_extra_1.readFile(path_1.join(".", "README.md"), "utf-8");
     readmeContents = `${readmeContents.split("<!--notes-->")[0]}<!--notes-->\n\n${content.trim()}\n<!--/notes-->${readmeContents.split("<!--/notes-->")[1]}`;
     const currentContents = await octokit.repos.getContent({
