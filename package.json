@@ -1,6 +1,6 @@
 {
   "name": "notes-summary",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Generate a summary for the notes in your GitHub repository",
   "main": "dist/index.js",
   "scripts": {

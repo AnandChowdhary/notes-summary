@@ -1,3 +1,9 @@
+## [v1.0.1](https://github.com/AnandChowdhary/notes-summary/compare/v1.0.0...v1.0.1) (2020-11-14)
+
+### ♻️ Updates
+
+- [`35e88b4`](https://github.com/AnandChowdhary/notes-summary/commit/35e88b4)  Add title of note, if available
+
 ## v1.0.0 (2020-11-14)
 
 ### ✨ New features
