@@ -3,6 +3,7 @@ import { context, getOctokit } from "@actions/github";
 import { GitHub } from "@actions/github/lib/utils";
 import { readdir, readFile } from "fs-extra";
 import { join } from "path";
+import { format } from "prettier";
 
 interface Note {
   slug: string;
@@ -90,7 +91,9 @@ export const run = async () => {
     repo: context.repo.repo,
     path: "README.md",
   });
-  const base64Content = Buffer.from(readmeContents).toString("base64");
+  const base64Content = Buffer.from(format(readmeContents.trim(), { parser: "markdown" })).toString(
+    "base64"
+  );
   if (
     Buffer.from(currentContents.data.content, "base64").toString("utf8").trim() !==
     readmeContents.trim()
