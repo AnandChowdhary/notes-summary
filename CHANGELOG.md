@@ -1,3 +1,10 @@
+## [v1.0.3](https://github.com/AnandChowdhary/notes-summary/compare/v1.0.2...v1.0.3) (2020-11-17)
+
+### ⬆️ Dependency updates
+
+- [`0a33a01`](https://github.com/AnandChowdhary/notes-summary/commit/0a33a01)  Bump semantic-release from 17.2.2 to 17.2.3
+- [`1ee77ba`](https://github.com/AnandChowdhary/notes-summary/commit/1ee77ba)  Update koj-co/github-actions-starter
+
 ## [v1.0.2](https://github.com/AnandChowdhary/notes-summary/compare/v1.0.1...v1.0.2) (2020-11-14)
 
 ### ♻️ Updates
