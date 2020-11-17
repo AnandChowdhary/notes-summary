@@ -53,7 +53,9 @@ jobs:
 
 Your `README.md` file should then contains a summary of the notes in the `notes` directory:
 
-![Screenshot of README.md](https://user-images.githubusercontent.com/2841780/97774563-e5ca4600-1b7e-11eb-926e-2bf81e4128bc.png)
+![Screenshot of README.md](https://user-images.githubusercontent.com/2841780/99380828-78454600-28f0-11eb-872c-e2a841bb27c7.png)
+
+You can see this example repository: https://github.com/AnandChowdhary/notes
 
 ## 📄 License
 
