@@ -1,7 +1,7 @@
 name: Dependabot PR CI
 on:
   schedule:
-    - cron: "0 * * * *"
+    - cron: "0 */6 * * *"
   workflow_dispatch:
 jobs:
   label-approve:
@@ -10,7 +10,6 @@ jobs:
     steps:
       - uses: koj-co/dependabot-pr-action@master
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          approve-minor: true
-          approve-patch: true
-          auto-label: true
+          token: ${{ secrets.GH_PAT }}
+          merge-minor: true
+          merge-patch: true
