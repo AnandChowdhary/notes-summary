@@ -8,6 +8,12 @@ inputs:
   token:
     required: true
     description: "GitHub token"
+  commitMessage:
+    required: false
+    description: "Commit message"
+  dirName:
+    required: false
+    description: "Directory name"
 branding:
   icon: "calendar"
   color: "green"
