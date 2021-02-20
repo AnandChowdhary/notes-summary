@@ -12,6 +12,7 @@ interface Note {
 }
 
 const parseNoteFile = async (
+  dirName: string,
   owner: string,
   repo: string,
   octokit: InstanceType<typeof GitHub>,
@@ -21,9 +22,9 @@ const parseNoteFile = async (
   const commits = await octokit.repos.listCommits({
     owner,
     repo,
-    path: `notes/${year}/${file}`,
+    path: `${dirName}/${year}/${file}`,
   });
-  const contents = await readFile(join(".", "notes", year, file), "utf8");
+  const contents = await readFile(join(".", dirName, year, file), "utf8");
   return {
     slug: file,
     title:
@@ -42,17 +43,20 @@ export const run = async () => {
   const octokit = getOctokit(token);
   const [owner, repo] = (process.env.GITHUB_REPOSITORY || "").split("/");
 
+  const commitMessage = getInput("commitMessage") || ":pencil: Update notes summary [skip ci]";
+  const dirName = getInput("dirName") || "notes";
+
   const allNotes: { [index: string]: Array<Note> } = {};
   let totalNotes = 0;
   let pastNotes = "";
   let upcomingNotes = "";
-  const years = await readdir(join(".", "notes"));
+  const years = await readdir(join(".", dirName));
   for await (const year of years) {
-    const notes = await readdir(join(".", "notes", year));
+    const notes = await readdir(join(".", dirName, year));
     for await (const note of notes) {
       totalNotes++;
       allNotes[year] = allNotes[year] || [];
-      const noteFile = await parseNoteFile(owner, repo, octokit, year, note);
+      const noteFile = await parseNoteFile(dirName, owner, repo, octokit, year, note);
       allNotes[year].push(noteFile);
     }
   }
@@ -67,7 +71,7 @@ export const run = async () => {
         const isPast = new Date(note.date).getTime() < new Date().getTime();
         const text = `${addedYears.includes(year) ? "" : `### ${year}\n\n`}- [${
           note.title || `\`${note.slug}\``
-        }](./notes/${year}/${note.slug}), ${new Date(note.date).toLocaleDateString("en-us", {
+        }](./${dirName}/${year}/${note.slug}), ${new Date(note.date).toLocaleDateString("en-us", {
           year: "numeric",
           month: "long",
           day: "numeric",
@@ -103,7 +107,7 @@ export const run = async () => {
       repo: context.repo.repo,
       sha: currentContents.data.sha,
       path: "README.md",
-      message: ":pencil: Update notes summary [skip ci]",
+      message: commitMessage,
       content: base64Content,
     });
   setOutput("Notes updated", totalNotes);
