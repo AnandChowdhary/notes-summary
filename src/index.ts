@@ -34,7 +34,7 @@ const parseNoteFile = async (
       ) ||
       (contents.split("\n").find((line) => line.startsWith("# ")) || "").split("# ")[1].trim() ||
       undefined,
-    date: new Date(commits.data[0].commit.author.date),
+    date: new Date(commits.data[commits.data.length - 1].commit.author.date),
   };
 };
 
