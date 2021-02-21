@@ -89,6 +89,7 @@ export const run = async () => {
   if (upcomingNotes.length) content += upcomingNotes;
   if (pastNotes.length) content += pastNotes;
   let readmeContents = await readFile(join(".", "README.md"), "utf-8");
+  const originalReadmeContents = await readFile(join(".", "README.md"), "utf-8");
   readmeContents = `${
     readmeContents.split("<!--notes-->")[0]
   }<!--notes-->\n\n${content.trim()}\n<!--/notes-->${readmeContents.split("<!--/notes-->")[1]}`;
@@ -102,7 +103,8 @@ export const run = async () => {
   );
   if (
     Buffer.from(currentContents.data.content, "base64").toString("utf8").trim() !==
-    readmeContents.trim()
+      readmeContents.trim() &&
+    originalReadmeContents.trim() !== format(readmeContents.trim(), { parser: "markdown" }).trim()
   )
     await octokit.repos.createOrUpdateFileContents({
       owner: context.repo.owner,
