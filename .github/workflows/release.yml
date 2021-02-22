@@ -1,8 +1,6 @@
 name: Release CI
 on:
-  push:
-    branches:
-      - master
+  workflow_dispatch:
 jobs:
   release:
     name: Build, test, and release
