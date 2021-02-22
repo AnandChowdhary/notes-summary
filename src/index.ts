@@ -1,7 +1,6 @@
 import { getInput, setFailed, setOutput } from "@actions/core";
-import { context, getOctokit } from "@actions/github";
-import { GitHub } from "@actions/github/lib/utils";
-import { readdir, readFile } from "fs-extra";
+import { execSync } from "child_process";
+import { readdir, readFile, writeFile } from "fs-extra";
 import { join } from "path";
 import { format } from "prettier";
 
@@ -11,20 +10,11 @@ interface Note {
   date: Date;
 }
 
-const parseNoteFile = async (
-  dirName: string,
-  owner: string,
-  repo: string,
-  octokit: InstanceType<typeof GitHub>,
-  year: string,
-  file: string
-): Promise<Note> => {
-  const commits = await octokit.repos.listCommits({
-    owner,
-    repo,
-    path: `${dirName}/${year}/${file}`,
-  });
+const parseNoteFile = async (dirName: string, year: string, file: string): Promise<Note> => {
   const contents = await readFile(join(".", dirName, year, file), "utf8");
+  const date = new Date(
+    execSync(`git log --format=%aD ${dirName}/${year}/${file}} | tail -1`).toString().trim()
+  );
   return {
     slug: file,
     title:
@@ -34,7 +24,7 @@ const parseNoteFile = async (
       ) ||
       (contents.split("\n").find((line) => line.startsWith("# ")) || "").split("# ")[1].trim() ||
       undefined,
-    date: new Date(commits.data[commits.data.length - 1].commit.author.date),
+    date,
   };
 };
 
@@ -42,10 +32,10 @@ const token = getInput("token") || process.env.GH_PAT || process.env.GITHUB_TOKE
 
 export const run = async () => {
   if (!token) throw new Error("GitHub token not found");
-  const octokit = getOctokit(token);
-  const [owner, repo] = (process.env.GITHUB_REPOSITORY || "").split("/");
-
   const commitMessage = getInput("commitMessage") || ":pencil: Update notes summary [skip ci]";
+  const commitEmail =
+    getInput("commitEmail") || "41898282+github-actions[bot]@users.noreply.github.com";
+  const commitUsername = getInput("commitUsername") || "github-actions[bot]";
   const dirName = getInput("dirName") || "notes";
 
   const allNotes: { [index: string]: Array<Note> } = {};
@@ -58,7 +48,7 @@ export const run = async () => {
     for await (const note of notes) {
       totalNotes++;
       allNotes[year] = allNotes[year] || [];
-      const noteFile = await parseNoteFile(dirName, owner, repo, octokit, year, note);
+      const noteFile = await parseNoteFile(dirName, year, note);
       allNotes[year].push(noteFile);
     }
   }
@@ -88,33 +78,27 @@ export const run = async () => {
 `;
   if (upcomingNotes.length) content += upcomingNotes;
   if (pastNotes.length) content += pastNotes;
-  let readmeContents = await readFile(join(".", "README.md"), "utf-8");
-  const originalReadmeContents = await readFile(join(".", "README.md"), "utf-8");
-  readmeContents = `${
-    readmeContents.split("<!--notes-->")[0]
-  }<!--notes-->\n\n${content.trim()}\n<!--/notes-->${readmeContents.split("<!--/notes-->")[1]}`;
-  const currentContents = await octokit.repos.getContent({
-    owner: context.repo.owner,
-    repo: context.repo.repo,
-    path: "README.md",
+  const originalReadmeContents = format(await readFile(join(".", "README.md"), "utf-8"), {
+    parser: "markdown",
   });
-  const base64Content = Buffer.from(format(readmeContents.trim(), { parser: "markdown" })).toString(
-    "base64"
+  await writeFile(
+    join(".", "README.md"),
+    format(
+      `${
+        originalReadmeContents.split("<!--notes-->")[0]
+      }<!--notes-->\n\n${content.trim()}\n<!--/notes-->${
+        originalReadmeContents.split("<!--/notes-->")[1]
+      }`,
+      { parser: "markdown" }
+    )
   );
-  if (
-    Buffer.from(currentContents.data.content, "base64").toString("utf8").trim() !==
-      readmeContents.trim() &&
-    originalReadmeContents.trim() !== format(readmeContents.trim(), { parser: "markdown" }).trim()
-  )
-    await octokit.repos.createOrUpdateFileContents({
-      owner: context.repo.owner,
-      repo: context.repo.repo,
-      sha: currentContents.data.sha,
-      path: "README.md",
-      message: commitMessage,
-      content: base64Content,
-    });
-  setOutput("Notes updated", totalNotes);
+  execSync(`git config --global user.email "${commitEmail}"`);
+  execSync(`git config --global user.name "${commitUsername}"`);
+  execSync("git pull");
+  execSync("git add .");
+  execSync(`git commit -m "${commitMessage}"`);
+  execSync("git push");
+  setOutput("number-of-notes", totalNotes);
 };
 
 run()
