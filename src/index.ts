@@ -35,7 +35,7 @@ const parseNoteFile = async (
     slug: file,
     title: title,
     date,
-    words: contents.length - (title || "").length,
+    words: contents.split(" ").length,
   };
 };
 
