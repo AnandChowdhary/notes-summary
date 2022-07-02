@@ -10,31 +10,43 @@ interface Note {
   date: Date;
 }
 
-const parseNoteFile = async (dirName: string, year: string, file: string): Promise<Note> => {
+const parseNoteFile = async (
+  dirName: string,
+  year: string,
+  file: string
+): Promise<Note> => {
   const contents = await readFile(join(".", dirName, year, file), "utf8");
-  const date = new Date(
-    execSync(`git log --format=%aD ${dirName}/${year}/${file}} | tail -1`).toString().trim()
-  );
+  const dateInput = execSync(
+    `git log --format=%aD ${dirName}/${year}/${file}} | tail -1`
+  )
+    .toString()
+    .trim();
+  const date = new Date(dateInput);
+  console.log("Got date", dateInput, date);
   return {
     slug: file,
     title:
-      (contents.split("\n").find((line) => line.startsWith("title: ")) || "").replace(
-        "title: ",
-        ""
-      ) ||
-      (contents.split("\n").find((line) => line.startsWith("# ")) || "").split("# ")[1].trim() ||
+      (
+        contents.split("\n").find((line) => line.startsWith("title: ")) || ""
+      ).replace("title: ", "") ||
+      (contents.split("\n").find((line) => line.startsWith("# ")) || "")
+        .split("# ")[1]
+        .trim() ||
       undefined,
     date,
   };
 };
 
-const token = getInput("token") || process.env.GH_PAT || process.env.GITHUB_TOKEN;
+const token =
+  getInput("token") || process.env.GH_PAT || process.env.GITHUB_TOKEN;
 
 export const run = async () => {
   if (!token) throw new Error("GitHub token not found");
-  const commitMessage = getInput("commitMessage") || ":pencil: Update notes summary [skip ci]";
+  const commitMessage =
+    getInput("commitMessage") || ":pencil: Update notes summary [skip ci]";
   const commitEmail =
-    getInput("commitEmail") || "41898282+github-actions[bot]@users.noreply.github.com";
+    getInput("commitEmail") ||
+    "41898282+github-actions[bot]@users.noreply.github.com";
   const commitUsername = getInput("commitUsername") || "github-actions[bot]";
   const dirName = getInput("dirName") || "notes";
 
@@ -63,7 +75,9 @@ export const run = async () => {
         const isPast = new Date(note.date).getTime() < new Date().getTime();
         const text = `${addedYears.includes(year) ? "" : `### ${year}\n\n`}- [${
           note.title || `\`${note.slug}\``
-        }](./${dirName}/${year}/${note.slug}), ${new Date(note.date).toLocaleDateString("en-us", {
+        }](./${dirName}/${year}/${note.slug}), ${new Date(
+          note.date
+        ).toLocaleDateString("en-us", {
           year: "numeric",
           month: "long",
           day: "numeric",
@@ -78,9 +92,12 @@ export const run = async () => {
 `;
   if (upcomingNotes.length) content += upcomingNotes;
   if (pastNotes.length) content += pastNotes;
-  const originalReadmeContents = format(await readFile(join(".", "README.md"), "utf-8"), {
-    parser: "markdown",
-  });
+  const originalReadmeContents = format(
+    await readFile(join(".", "README.md"), "utf-8"),
+    {
+      parser: "markdown",
+    }
+  );
   await writeFile(
     join(".", "README.md"),
     format(
@@ -91,6 +108,18 @@ export const run = async () => {
       }`,
       { parser: "markdown" }
     )
+  );
+  await writeFile(
+    join(".", "api.json"),
+    JSON.stringify(
+      Object.values(allNotes)
+        .flat()
+        .sort(
+          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+        ),
+      null,
+      2
+    ) + "\n"
   );
   execSync(`git config --global user.email "${commitEmail}"`);
   execSync(`git config --global user.name "${commitUsername}"`);
