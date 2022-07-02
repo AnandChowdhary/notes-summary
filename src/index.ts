@@ -17,12 +17,11 @@ const parseNoteFile = async (
 ): Promise<Note> => {
   const contents = await readFile(join(".", dirName, year, file), "utf8");
   const dateInput = execSync(
-    `git log --format=%aD ${dirName}/${year}/${file}} | tail -1`
+    `git log --format=%aD ${dirName}/${year}/${file} | tail -1`
   )
     .toString()
     .trim();
   const date = new Date(dateInput);
-  console.log("Got date", dateInput, date);
   return {
     slug: file,
     title:
