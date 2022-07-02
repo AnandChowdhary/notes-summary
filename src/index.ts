@@ -8,6 +8,7 @@ interface Note {
   slug: string;
   title?: string;
   date: Date;
+  words: number;
 }
 
 const parseNoteFile = async (
@@ -22,17 +23,19 @@ const parseNoteFile = async (
     .toString()
     .trim();
   const date = new Date(dateInput);
+  const title =
+    (
+      contents.split("\n").find((line) => line.startsWith("title: ")) || ""
+    ).replace("title: ", "") ||
+    (contents.split("\n").find((line) => line.startsWith("# ")) || "")
+      .split("# ")[1]
+      .trim() ||
+    undefined;
   return {
     slug: file,
-    title:
-      (
-        contents.split("\n").find((line) => line.startsWith("title: ")) || ""
-      ).replace("title: ", "") ||
-      (contents.split("\n").find((line) => line.startsWith("# ")) || "")
-        .split("# ")[1]
-        .trim() ||
-      undefined,
+    title: title,
     date,
+    words: contents.length - (title || "").length,
   };
 };
 
@@ -74,9 +77,9 @@ export const run = async () => {
         const isPast = new Date(note.date).getTime() < new Date().getTime();
         const text = `${addedYears.includes(year) ? "" : `### ${year}\n\n`}- [${
           note.title || `\`${note.slug}\``
-        }](./${dirName}/${year}/${note.slug}), ${new Date(
-          note.date
-        ).toLocaleDateString("en-us", {
+        }](./${dirName}/${year}/${note.slug}) (${note.words.toLocaleString(
+          "en-US"
+        )} words), ${new Date(note.date).toLocaleDateString("en-US", {
           year: "numeric",
           month: "long",
           day: "numeric",
