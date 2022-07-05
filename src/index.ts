@@ -127,8 +127,7 @@ export const run = async () => {
     execSync(`git config --global user.email "${commitEmail}"`, { stdio: "inherit" });
     execSync(`git config --global user.name "${commitUsername}"`, { stdio: "inherit" });
     execSync("git pull", { stdio: "inherit" });
-    execSync("git add .", { stdio: "inherit" });
-    execSync(`git commit -m "${commitMessage}"`, { stdio: "inherit" });
+    execSync(`git diff --quiet && git diff --staged --quiet || git commit -am "${commitMessage}"`, { stdio: "inherit" });
     execSync("git push", { stdio: "inherit" });
   } catch (error) {
     console.error(String(error));
