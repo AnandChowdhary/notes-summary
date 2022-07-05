@@ -123,12 +123,17 @@ export const run = async () => {
       2
     ) + "\n"
   );
-  execSync(`git config --global user.email "${commitEmail}"`);
-  execSync(`git config --global user.name "${commitUsername}"`);
-  execSync("git pull");
-  execSync("git add .");
-  execSync(`git commit -m "${commitMessage}"`);
-  execSync("git push");
+  try {
+    execSync(`git config --global user.email "${commitEmail}"`, { stdio: "inherit" });
+    execSync(`git config --global user.name "${commitUsername}"`, { stdio: "inherit" });
+    execSync("git pull", { stdio: "inherit" });
+    execSync("git add .", { stdio: "inherit" });
+    execSync(`git commit -m "${commitMessage}"`, { stdio: "inherit" });
+    execSync("git push", { stdio: "inherit" });
+  } catch (error) {
+    console.error(String(error));
+    throw new Error(error);
+  }
   setOutput("number-of-notes", totalNotes);
 };
 
