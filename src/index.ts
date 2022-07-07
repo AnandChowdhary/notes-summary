@@ -2,53 +2,72 @@ import { getInput, setFailed, setOutput } from "@actions/core";
 import { execSync } from "child_process";
 import { readdir, readFile, writeFile } from "fs-extra";
 import { join } from "path";
+import truncate from "truncate-sentences";
 import { format } from "prettier";
 
 interface Note {
   slug: string;
   title?: string;
+  excerpt?: string;
   date: Date;
   words: number;
 }
 
-const parseNoteFile = async (
-  dirName: string,
-  year: string,
-  file: string
-): Promise<Note> => {
+/**
+ * Get a note from a file
+ * @param dirName - The directory where the file resides
+ * @param year - The year of the note
+ * @param file - The file name
+ * @returns Parsed note
+ */
+const parseNoteFile = async (dirName: string, year: string, file: string): Promise<Note> => {
   const contents = await readFile(join(".", dirName, year, file), "utf8");
-  const dateInput = execSync(
-    `git log --format=%aD ${dirName}/${year}/${file} | tail -1`
-  )
+  const dateInput = execSync(`git log --format=%aD ${dirName}/${year}/${file} | tail -1`)
     .toString()
     .trim();
   const date = new Date(dateInput);
   const title =
-    (
-      contents.split("\n").find((line) => line.startsWith("title: ")) || ""
-    ).replace("title: ", "") ||
-    (contents.split("\n").find((line) => line.startsWith("# ")) || "")
-      .split("# ")[1]
-      .trim() ||
+    (contents.split("\n").find((line) => line.startsWith("title: ")) || "").replace(
+      "title: ",
+      ""
+    ) ||
+    (contents.split("\n").find((line) => line.startsWith("# ")) || "").split("# ")[1].trim() ||
     undefined;
+  const excerpt =
+    (contents.split("\n").find((line) => line.startsWith("excerpt: ")) || "").replace(
+      "excerpt: ",
+      ""
+    ) ||
+    (contents.split("\n").find((line) => line.startsWith("description: ")) || "").replace(
+      "description: ",
+      ""
+    ) ||
+    (contents.split("\n").find((line) => line.startsWith("summary: ")) || "").replace(
+      "summary: ",
+      ""
+    ) ||
+    (title
+      ? (contents.split(title)[1] || "")
+          .trim()
+          .split("\n")
+          .find((line) => line.length > 10) || undefined
+      : undefined);
   return {
     slug: file,
     title: title,
     date,
+    excerpt: excerpt ? truncate(excerpt, 500) : undefined,
     words: contents.split(" ").length,
   };
 };
 
-const token =
-  getInput("token") || process.env.GH_PAT || process.env.GITHUB_TOKEN;
+const token = getInput("token") || process.env.GH_PAT || process.env.GITHUB_TOKEN;
 
 export const run = async () => {
   if (!token) throw new Error("GitHub token not found");
-  const commitMessage =
-    getInput("commitMessage") || ":pencil: Update notes summary [skip ci]";
+  const commitMessage = getInput("commitMessage") || ":pencil: Update notes summary [skip ci]";
   const commitEmail =
-    getInput("commitEmail") ||
-    "41898282+github-actions[bot]@users.noreply.github.com";
+    getInput("commitEmail") || "41898282+github-actions[bot]@users.noreply.github.com";
   const commitUsername = getInput("commitUsername") || "github-actions[bot]";
   const dirName = getInput("dirName") || "notes";
 
@@ -94,12 +113,9 @@ export const run = async () => {
 `;
   if (upcomingNotes.length) content += upcomingNotes;
   if (pastNotes.length) content += pastNotes;
-  const originalReadmeContents = format(
-    await readFile(join(".", "README.md"), "utf-8"),
-    {
-      parser: "markdown",
-    }
-  );
+  const originalReadmeContents = format(await readFile(join(".", "README.md"), "utf-8"), {
+    parser: "markdown",
+  });
   await writeFile(
     join(".", "README.md"),
     format(
@@ -116,9 +132,7 @@ export const run = async () => {
     JSON.stringify(
       Object.values(allNotes)
         .flat()
-        .sort(
-          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-        ),
+        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()),
       null,
       2
     ) + "\n"
@@ -127,18 +141,18 @@ export const run = async () => {
     execSync(`git config --global user.email "${commitEmail}"`, { stdio: "inherit" });
     execSync(`git config --global user.name "${commitUsername}"`, { stdio: "inherit" });
     execSync("git pull", { stdio: "inherit" });
-    execSync(`git diff --quiet && git diff --staged --quiet || git commit -am "${commitMessage}"`, { stdio: "inherit" });
+    execSync(`git diff --quiet && git diff --staged --quiet || git commit -am "${commitMessage}"`, {
+      stdio: "inherit",
+    });
     execSync("git push", { stdio: "inherit" });
   } catch (error) {
     console.error(String(error));
-    throw new Error(error);
+    throw new Error(error as any);
   }
   setOutput("number-of-notes", totalNotes);
 };
 
-run()
-  .then(() => {})
-  .catch((error) => {
-    console.error("ERROR", error);
-    setFailed(error.message);
-  });
+run().catch((error) => {
+  console.error("ERROR", error);
+  setFailed(error.message);
+});

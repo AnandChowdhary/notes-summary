@@ -44,7 +44,8 @@
     "@koj/config": "^1.2.11",
     "emoji-flags": "^1.3.0",
     "fs-extra": "^10.1.0",
-    "prettier": "^2.7.1"
+    "prettier": "^2.7.1",
+    "truncate-sentences": "^1.0.0"
   },
   "jest": {
     "roots": [
