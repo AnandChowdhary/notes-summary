@@ -47,7 +47,10 @@ const parseNoteFile = async (dirName: string, year: string, file: string): Promi
       ""
     ) ||
     (title
-      ? (contents.split(title)[1] || "")
+      ? ((contents.split(title)[1] || "").includes("---\n")
+          ? (contents.split(title)[1] || "").split("---\n").pop() || ""
+          : contents.split(title)[1] || ""
+        )
           .trim()
           .split("\n")
           .find((line) => line.length > 10) || undefined
