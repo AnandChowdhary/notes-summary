@@ -48,6 +48,8 @@
     "truncate-sentences": "^1.0.0"
   },
   "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
     "roots": [
       "<rootDir>/src/"
     ],
