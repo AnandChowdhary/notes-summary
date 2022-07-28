@@ -31,7 +31,7 @@ const parseNoteFile = async (dirName: string, year: string, file: string): Promi
       "title: ",
       ""
     ) ||
-    (contents.split("\n").find((line) => line.startsWith("# ")) || "").split("# ")[1].trim() ||
+    ((contents.split("\n").find((line) => line.startsWith("# ")) || "").split("# ")[1] || "").trim() ||
     undefined;
   const excerpt =
     (contents.split("\n").find((line) => line.startsWith("excerpt: ")) || "").replace(
