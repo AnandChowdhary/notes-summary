@@ -1,9 +1,10 @@
 import { getInput, setFailed, setOutput } from "@actions/core";
 import { execSync } from "child_process";
 import { readdir, readFile, writeFile } from "fs-extra";
+import markdownToTxt from "markdown-to-txt";
 import { join } from "path";
-import truncate from "truncate-sentences";
 import { format } from "prettier";
+import truncate from "truncate-sentences";
 
 interface Note {
   slug: string;
@@ -31,7 +32,9 @@ const parseNoteFile = async (dirName: string, year: string, file: string): Promi
       "title: ",
       ""
     ) ||
-    ((contents.split("\n").find((line) => line.startsWith("# ")) || "").split("# ")[1] || "").trim() ||
+    (
+      (contents.split("\n").find((line) => line.startsWith("# ")) || "").split("# ")[1] || ""
+    ).trim() ||
     undefined;
   const excerpt =
     (contents.split("\n").find((line) => line.startsWith("excerpt: ")) || "").replace(
@@ -59,7 +62,7 @@ const parseNoteFile = async (dirName: string, year: string, file: string): Promi
     slug: file,
     title: title,
     date,
-    excerpt: excerpt ? truncate(excerpt, 500) : undefined,
+    excerpt: excerpt ? truncate(markdownToTxt(excerpt), 500) : undefined,
     words: contents.split(" ").length,
   };
 };
