@@ -23,9 +23,14 @@ interface Note {
  */
 const parseNoteFile = async (dirName: string, year: string, file: string): Promise<Note> => {
   const contents = await readFile(join(".", dirName, year, file), "utf8");
-  const dateInput = execSync(`git log --format=%aD ${dirName}/${year}/${file} | tail -1`)
-    .toString()
-    .trim();
+  const dateInput =
+    (contents.split("\n").find((line) => line.startsWith("date: ")) || "").replace(
+      "date: ",
+      ""
+    ) ||
+     execSync(`git log --format=%aD ${dirName}/${year}/${file} | tail -1`)
+      .toString()
+      .trim();
   const date = new Date(dateInput);
   const title =
     (contents.split("\n").find((line) => line.startsWith("title: ")) || "").replace(
