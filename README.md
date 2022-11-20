@@ -51,7 +51,7 @@ on:
 jobs:
   summarize:
     name: Update README.md and api.json
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     # Don't run this workflow when [skip ci] is passed
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
     steps:
