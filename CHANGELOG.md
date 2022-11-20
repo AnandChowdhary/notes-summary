@@ -1,3 +1,45 @@
+## v1.2.0 (2022-11-20)
+
+[📝 Release notes](https://github.com/AnandChowdhary/notes-summary/releases/tag/v1.2.0) · [💻 Compare](https://github.com/AnandChowdhary/notes-summary/compare/v1.1.0...v1.2.0) · [🔖 Tag](https://github.com/AnandChowdhary/notes-summary/tree/v1.2.0) · 🗄️ Archive ([zip](https://github.com/AnandChowdhary/notes-summary/archive/v1.2.0.zip) · [tar.gz](https://github.com/AnandChowdhary/notes-summary/archive/v1.2.0.tar.gz))
+
+### ✨ New features
+
+- [`ac6b07a`](https://github.com/AnandChowdhary/notes-summary/commit/ac6b07a)  Add number of words to summary &amp; API
+- [`341bc09`](https://github.com/AnandChowdhary/notes-summary/commit/341bc09)  Only commit if there are any changes
+- [`2158e0e`](https://github.com/AnandChowdhary/notes-summary/commit/2158e0e)  Add support for excerpt
+
+### ♻️ Updates
+
+- [`fefefa2`](https://github.com/AnandChowdhary/notes-summary/commit/fefefa2)  Log exceptions to console
+- [`b1309ff`](https://github.com/AnandChowdhary/notes-summary/commit/b1309ff)  Add fallback for excerpt
+
+### 🐛 Bug fixes
+
+- [`7dd439d`](https://github.com/AnandChowdhary/notes-summary/commit/7dd439d)  Fix date input for git log check
+- [`5db1ff8`](https://github.com/AnandChowdhary/notes-summary/commit/5db1ff8)  Use words, not characters, in word count
+- [`9bdb05f`](https://github.com/AnandChowdhary/notes-summary/commit/9bdb05f)  Ignore front matter data in files
+- [`e98e77e`](https://github.com/AnandChowdhary/notes-summary/commit/e98e77e)  Fix missing titme when trimming
+- [`7531a0a`](https://github.com/AnandChowdhary/notes-summary/commit/7531a0a)  Remove markdown from excerpt
+- [`cd6cac8`](https://github.com/AnandChowdhary/notes-summary/commit/cd6cac8)  Correctly parse manually overwritten date
+
+### ⬆️ Dependency updates
+
+- [`b1fbb7f`](https://github.com/AnandChowdhary/notes-summary/commit/b1fbb7f)  Bump actions/setup-node from v2.1.4 to v2.1.5
+- [`6932459`](https://github.com/AnandChowdhary/notes-summary/commit/6932459)  Bump typescript from 4.1.5 to 4.2.2
+- [`ad69de5`](https://github.com/AnandChowdhary/notes-summary/commit/ad69de5)  Bump stefanzweifel/git-auto-commit-action
+- [`36874c8`](https://github.com/AnandChowdhary/notes-summary/commit/36874c8)  Bump ts-jest from 26.5.1 to 26.5.2
+- [`54aec87`](https://github.com/AnandChowdhary/notes-summary/commit/54aec87)  Bump semantic-release from 17.3.9 to 17.4.0
+- [`4565bcb`](https://github.com/AnandChowdhary/notes-summary/commit/4565bcb)  Bump @types/fs-extra from 9.0.7 to 9.0.8
+- [`038c99d`](https://github.com/AnandChowdhary/notes-summary/commit/038c99d)  Bump semantic-release from 17.4.0 to 17.4.1
+- [`9e676e6`](https://github.com/AnandChowdhary/notes-summary/commit/9e676e6)  Bump ts-jest from 26.5.2 to 26.5.3
+- [`43faf77`](https://github.com/AnandChowdhary/notes-summary/commit/43faf77)  Bump typescript from 4.2.2 to 4.2.3
+- [`a1748de`](https://github.com/AnandChowdhary/notes-summary/commit/a1748de)  Bump stefanzweifel/git-auto-commit-action
+- [`5efbf4a`](https://github.com/AnandChowdhary/notes-summary/commit/5efbf4a)  Update dependencies
+- [`6546991`](https://github.com/AnandChowdhary/notes-summary/commit/6546991)  Add @types/marked
+- [`de1cce0`](https://github.com/AnandChowdhary/notes-summary/commit/de1cce0)  Bump ansi-regex and ansi-regex
+- [`8e2767b`](https://github.com/AnandChowdhary/notes-summary/commit/8e2767b)  Bump hosted-git-info from 2.8.8 to 4.1.0
+- [`ba74600`](https://github.com/AnandChowdhary/notes-summary/commit/ba74600)  Update all dependencies
+
 ## v1.1.0 (2021-02-22)
 
 [📝 Release notes](https://github.com/AnandChowdhary/notes-summary/releases/tag/v1.1.0) · [💻 Compare](https://github.com/AnandChowdhary/notes-summary/compare/v1.0.5...v1.1.0) · [🔖 Tag](https://github.com/AnandChowdhary/notes-summary/tree/v1.1.0) · 🗄️ Archive ([zip](https://github.com/AnandChowdhary/notes-summary/archive/v1.1.0.zip) · [tar.gz](https://github.com/AnandChowdhary/notes-summary/archive/v1.1.0.tar.gz))
