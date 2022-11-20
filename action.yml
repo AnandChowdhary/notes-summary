@@ -2,7 +2,7 @@ name: "Notes Summary README"
 description: "🗒️ Generate a README.md summary for your notes repository"
 author: "Anand Chowdhary <https://github.com/AnandChowdhary>"
 runs:
-  using: "node12"
+  using: "node16"
   main: "dist/index.js"
 inputs:
   token:
