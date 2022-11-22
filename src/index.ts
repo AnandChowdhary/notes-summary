@@ -5,9 +5,12 @@ import markdownToTxt from "markdown-to-txt";
 import { join } from "path";
 import { format } from "prettier";
 import truncate from "truncate-sentences";
+import frontMatter from "front-matter";
 
 interface Note {
   slug: string;
+  path: string;
+  source: string;
   title?: string;
   excerpt?: string;
   date: Date;
@@ -22,52 +25,51 @@ interface Note {
  * @returns Parsed note
  */
 const parseNoteFile = async (dirName: string, year: string, file: string): Promise<Note> => {
-  const contents = await readFile(join(".", dirName, year, file), "utf8");
-  const dateInput =
-    (contents.split("\n").find((line) => line.startsWith("date: ")) || "").replace("date: ", "") ||
-    execSync(`git log --format=%aD ${dirName}/${year}/${file} | tail -1`).toString().trim();
-  const date = new Date(dateInput);
-  const title =
-    (contents.split("\n").find((line) => line.startsWith("title: ")) || "").replace(
-      "title: ",
-      ""
-    ) ||
-    (
-      (contents.split("\n").find((line) => line.startsWith("# ")) || "").split("# ")[1] || ""
-    ).trim() ||
-    undefined;
+  const path = join(".", dirName, year, file);
+  const source = `https://github.com/${process.env.GITHUB_REPOSITORY}/blob/${process.env.GITHUB_REF_NAME}/${path}`;
+  const contents = await readFile(path, "utf8");
+  const { attributes, body } = frontMatter<{
+    date?: unknown;
+    title?: unknown;
+    excerpt?: unknown;
+    description?: unknown;
+    summary?: unknown;
+  }>(contents);
+
+  const date: Date =
+    "date" in attributes && typeof attributes.date === "string"
+      ? new Date(attributes.date)
+      : "date" in attributes && attributes.date instanceof Date
+      ? attributes.date
+      : // Use git file creation date if no date is specified
+        new Date(
+          execSync(`git log --format=%aD ${dirName}/${year}/${file} | tail -1`).toString().trim()
+        );
+
+  const title = (
+    "title" in attributes && typeof attributes.title === "string"
+      ? attributes.title
+      : body.match(/^# (.*)/m)?.[2]
+  )?.trim();
+  if (!title) throw new Error(`Unable to parse title in ${path}`);
+
   const excerpt =
-    (contents.split("\n").find((line) => line.startsWith("excerpt: ")) || "").replace(
-      "excerpt: ",
-      ""
-    ) ||
-    (contents.split("\n").find((line) => line.startsWith("description: ")) || "").replace(
-      "description: ",
-      ""
-    ) ||
-    (contents.split("\n").find((line) => line.startsWith("summary: ")) || "").replace(
-      "summary: ",
-      ""
-    ) ||
-    (title
-      ? ((contents.split(title)[1] || "").includes("---\n")
-          ? (contents.split(title)[1] || "").split("---\n").pop() || ""
-          : contents.split(title)[1] || ""
-        )
-          .trim()
-          .split("\n")
-          .find((line) => line.length > 10) ||
-        ((contents.split(title)[1] || "").includes("---\n")
-          ? (contents.split(title)[1] || "").split("---\n").pop() || ""
-          : contents.split(title)[1] || ""
-        ).trim()
-      : undefined);
+    "excerpt" in attributes && typeof attributes.excerpt === "string"
+      ? attributes.excerpt
+      : "description" in attributes && typeof attributes.description === "string"
+      ? attributes.description
+      : "summary" in attributes && typeof attributes.summary === "string"
+      ? attributes.summary
+      : body.split(title)[1].trim();
+
   return {
     slug: file,
+    path,
+    source,
     title: title,
     date,
     excerpt: excerpt ? truncate(markdownToTxt(excerpt), 500) : undefined,
-    words: contents.split(" ").length,
+    words: body.split(" ").length,
   };
 };
 
