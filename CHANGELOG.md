@@ -1,3 +1,11 @@
+## v1.3.1 (2022-11-22)
+
+[📝 Release notes](https://github.com/AnandChowdhary/notes-summary/releases/tag/v1.3.1) · [💻 Compare](https://github.com/AnandChowdhary/notes-summary/compare/v1.3.0...v1.3.1) · [🔖 Tag](https://github.com/AnandChowdhary/notes-summary/tree/v1.3.1) · 🗄️ Archive ([zip](https://github.com/AnandChowdhary/notes-summary/archive/v1.3.1.zip) · [tar.gz](https://github.com/AnandChowdhary/notes-summary/archive/v1.3.1.tar.gz))
+
+### 🐛 Bug fixes
+
+- [`a8f1882`](https://github.com/AnandChowdhary/notes-summary/commit/a8f1882)  Ensure body exists when trimming
+
 ## v1.3.0 (2022-11-22)
 
 [📝 Release notes](https://github.com/AnandChowdhary/notes-summary/releases/tag/v1.3.0) · [💻 Compare](https://github.com/AnandChowdhary/notes-summary/compare/v1.2.0...v1.3.0) · [🔖 Tag](https://github.com/AnandChowdhary/notes-summary/tree/v1.3.0) · 🗄️ Archive ([zip](https://github.com/AnandChowdhary/notes-summary/archive/v1.3.0.zip) · [tar.gz](https://github.com/AnandChowdhary/notes-summary/archive/v1.3.0.tar.gz))
