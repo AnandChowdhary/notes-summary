@@ -1,3 +1,11 @@
+## v1.3.0 (2022-11-22)
+
+[📝 Release notes](https://github.com/AnandChowdhary/notes-summary/releases/tag/v1.3.0) · [💻 Compare](https://github.com/AnandChowdhary/notes-summary/compare/v1.2.0...v1.3.0) · [🔖 Tag](https://github.com/AnandChowdhary/notes-summary/tree/v1.3.0) · 🗄️ Archive ([zip](https://github.com/AnandChowdhary/notes-summary/archive/v1.3.0.zip) · [tar.gz](https://github.com/AnandChowdhary/notes-summary/archive/v1.3.0.tar.gz))
+
+### ✨ New features
+
+- [`f686a48`](https://github.com/AnandChowdhary/notes-summary/commit/f686a48)  Use front-matter, add slug &amp; path
+
 ## v1.2.0 (2022-11-20)
 
 [📝 Release notes](https://github.com/AnandChowdhary/notes-summary/releases/tag/v1.2.0) · [💻 Compare](https://github.com/AnandChowdhary/notes-summary/compare/v1.1.0...v1.2.0) · [🔖 Tag](https://github.com/AnandChowdhary/notes-summary/tree/v1.2.0) · 🗄️ Archive ([zip](https://github.com/AnandChowdhary/notes-summary/archive/v1.2.0.zip) · [tar.gz](https://github.com/AnandChowdhary/notes-summary/archive/v1.2.0.tar.gz))
