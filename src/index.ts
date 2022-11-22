@@ -50,7 +50,7 @@ const parseNoteFile = async (dirName: string, year: string, file: string): Promi
   const title = (
     "title" in attributes && typeof attributes.title === "string"
       ? attributes.title
-      : body.match(/^# (.*)/m)?.[2]
+      : body.match(/^# (.*)/m)?.[1]
   )?.trim();
   if (!title) throw new Error(`Unable to parse title in ${path}`);
 
