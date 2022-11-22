@@ -1,3 +1,11 @@
+## v1.4.2 (2022-11-22)
+
+[📝 Release notes](https://github.com/AnandChowdhary/notes-summary/releases/tag/v1.4.2) · [💻 Compare](https://github.com/AnandChowdhary/notes-summary/compare/v1.4.1...v1.4.2) · [🔖 Tag](https://github.com/AnandChowdhary/notes-summary/tree/v1.4.2) · 🗄️ Archive ([zip](https://github.com/AnandChowdhary/notes-summary/archive/v1.4.2.zip) · [tar.gz](https://github.com/AnandChowdhary/notes-summary/archive/v1.4.2.tar.gz))
+
+### 🐛 Bug fixes
+
+- [`99cf5d5`](https://github.com/AnandChowdhary/notes-summary/commit/99cf5d5)  Fix fallback heading parsing
+
 ## v1.4.1 (2022-11-22)
 
 [📝 Release notes](https://github.com/AnandChowdhary/notes-summary/releases/tag/v1.4.1) · [💻 Compare](https://github.com/AnandChowdhary/notes-summary/compare/v1.4.0...v1.4.1) · [🔖 Tag](https://github.com/AnandChowdhary/notes-summary/tree/v1.4.1) · 🗄️ Archive ([zip](https://github.com/AnandChowdhary/notes-summary/archive/v1.4.1.zip) · [tar.gz](https://github.com/AnandChowdhary/notes-summary/archive/v1.4.1.tar.gz))
