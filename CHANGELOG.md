@@ -1,3 +1,11 @@
+## v1.4.3 (2022-11-22)
+
+[📝 Release notes](https://github.com/AnandChowdhary/notes-summary/releases/tag/v1.4.3) · [💻 Compare](https://github.com/AnandChowdhary/notes-summary/compare/v1.4.2...v1.4.3) · [🔖 Tag](https://github.com/AnandChowdhary/notes-summary/tree/v1.4.3) · 🗄️ Archive ([zip](https://github.com/AnandChowdhary/notes-summary/archive/v1.4.3.zip) · [tar.gz](https://github.com/AnandChowdhary/notes-summary/archive/v1.4.3.tar.gz))
+
+### 🐛 Bug fixes
+
+- [`ca40c9d`](https://github.com/AnandChowdhary/notes-summary/commit/ca40c9d)  Correctly parse title in body
+
 ## v1.4.2 (2022-11-22)
 
 [📝 Release notes](https://github.com/AnandChowdhary/notes-summary/releases/tag/v1.4.2) · [💻 Compare](https://github.com/AnandChowdhary/notes-summary/compare/v1.4.1...v1.4.2) · [🔖 Tag](https://github.com/AnandChowdhary/notes-summary/tree/v1.4.2) · 🗄️ Archive ([zip](https://github.com/AnandChowdhary/notes-summary/archive/v1.4.2.zip) · [tar.gz](https://github.com/AnandChowdhary/notes-summary/archive/v1.4.2.tar.gz))
