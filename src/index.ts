@@ -61,7 +61,7 @@ const parseNoteFile = async (dirName: string, year: string, file: string): Promi
       ? attributes.description
       : "summary" in attributes && typeof attributes.summary === "string"
       ? attributes.summary
-      : body.substring(body.indexOf(title) + 1)?.trim();
+      : body.substring(body.indexOf(title))?.trim();
 
   return {
     slug: file,
