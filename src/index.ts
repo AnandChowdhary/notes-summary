@@ -15,6 +15,7 @@ interface Note {
   excerpt?: string;
   date: Date;
   words: number;
+  attributes?: Record<string, unknown>;
 }
 
 /**
@@ -60,7 +61,7 @@ const parseNoteFile = async (dirName: string, year: string, file: string): Promi
       ? attributes.description
       : "summary" in attributes && typeof attributes.summary === "string"
       ? attributes.summary
-      : body.split(title)[1]?.trim();
+      : body.substring(body.indexOf(title) + 1)?.trim();
 
   return {
     slug: file,
@@ -70,6 +71,7 @@ const parseNoteFile = async (dirName: string, year: string, file: string): Promi
     date,
     excerpt: excerpt ? truncate(markdownToTxt(excerpt), 500) : undefined,
     words: body.split(" ").length,
+    attributes,
   };
 };
 
