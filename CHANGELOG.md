@@ -1,3 +1,11 @@
+## v1.4.0 (2022-11-22)
+
+[📝 Release notes](https://github.com/AnandChowdhary/notes-summary/releases/tag/v1.4.0) · [💻 Compare](https://github.com/AnandChowdhary/notes-summary/compare/v1.3.1...v1.4.0) · [🔖 Tag](https://github.com/AnandChowdhary/notes-summary/tree/v1.4.0) · 🗄️ Archive ([zip](https://github.com/AnandChowdhary/notes-summary/archive/v1.4.0.zip) · [tar.gz](https://github.com/AnandChowdhary/notes-summary/archive/v1.4.0.tar.gz))
+
+### ✨ New features
+
+- [`7ea29a0`](https://github.com/AnandChowdhary/notes-summary/commit/7ea29a0)  Add support for attributes
+
 ## v1.3.1 (2022-11-22)
 
 [📝 Release notes](https://github.com/AnandChowdhary/notes-summary/releases/tag/v1.3.1) · [💻 Compare](https://github.com/AnandChowdhary/notes-summary/compare/v1.3.0...v1.3.1) · [🔖 Tag](https://github.com/AnandChowdhary/notes-summary/tree/v1.3.1) · 🗄️ Archive ([zip](https://github.com/AnandChowdhary/notes-summary/archive/v1.3.1.zip) · [tar.gz](https://github.com/AnandChowdhary/notes-summary/archive/v1.3.1.tar.gz))
