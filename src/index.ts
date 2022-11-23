@@ -40,6 +40,8 @@ const parseNoteFile = async (dirName: string, year: string, file: string): Promi
   const date: Date =
     "date" in attributes && typeof attributes.date === "string"
       ? new Date(attributes.date)
+      : "date" in attributes && typeof attributes.date === "number"
+      ? new Date(attributes.date)
       : "date" in attributes && attributes.date instanceof Date
       ? attributes.date
       : // Use git file creation date if no date is specified
