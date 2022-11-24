@@ -1,3 +1,17 @@
+## v1.5.0 (2022-11-24)
+
+[📝 Release notes](https://github.com/AnandChowdhary/notes-summary/releases/tag/v1.5.0) · [💻 Compare](https://github.com/AnandChowdhary/notes-summary/compare/v1.4.4...v1.5.0) · [🔖 Tag](https://github.com/AnandChowdhary/notes-summary/tree/v1.5.0) · 🗄️ Archive ([zip](https://github.com/AnandChowdhary/notes-summary/archive/v1.5.0.zip) · [tar.gz](https://github.com/AnandChowdhary/notes-summary/archive/v1.5.0.tar.gz))
+
+### ✨ New features
+
+- [`7885c16`](https://github.com/AnandChowdhary/notes-summary/commit/7885c16)  Add support for custom caption
+
+### ♻️ Updates
+
+- [`ac0685a`](https://github.com/AnandChowdhary/notes-summary/commit/ac0685a)  Refactor notes to generate items
+- [`40d71b1`](https://github.com/AnandChowdhary/notes-summary/commit/40d71b1)  Use eval directory to allow require
+- [`a8e9d7f`](https://github.com/AnandChowdhary/notes-summary/commit/a8e9d7f)  Use @github/actions-script method for require
+
 ## v1.4.4 (2022-11-24)
 
 [📝 Release notes](https://github.com/AnandChowdhary/notes-summary/releases/tag/v1.4.4) · [💻 Compare](https://github.com/AnandChowdhary/notes-summary/compare/v1.4.3...v1.4.4) · [🔖 Tag](https://github.com/AnandChowdhary/notes-summary/tree/v1.4.4) · 🗄️ Archive ([zip](https://github.com/AnandChowdhary/notes-summary/archive/v1.4.4.zip) · [tar.gz](https://github.com/AnandChowdhary/notes-summary/archive/v1.4.4.tar.gz))
