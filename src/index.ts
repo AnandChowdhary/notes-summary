@@ -1,11 +1,13 @@
 import { getInput, setFailed, setOutput } from "@actions/core";
 import { execSync } from "child_process";
+import frontMatter from "front-matter";
 import { readdir, readFile, writeFile } from "fs-extra";
 import markdownToTxt from "markdown-to-txt";
-import { join } from "path";
+import { join, resolve } from "path";
 import { format } from "prettier";
 import truncate from "truncate-sentences";
-import frontMatter from "front-matter";
+
+declare var __non_webpack_require__: any;
 
 interface Item {
   slug: string;
@@ -17,6 +19,44 @@ interface Item {
   attributes?: Record<string, unknown>;
   caption?: string;
 }
+
+const AsyncFunction = Object.getPrototypeOf(async () => null).constructor;
+
+type AsyncFunctionArguments = Item & {
+  require: NodeRequire;
+  __original_require__: NodeRequire;
+};
+
+export function callAsyncFunction<T = string>(
+  args: AsyncFunctionArguments,
+  source: string
+): Promise<T> {
+  const fn = new AsyncFunction(...Object.keys(args), source);
+  return fn(...Object.values(args));
+}
+export const wrapRequire = new Proxy(__non_webpack_require__, {
+  apply: (target, thisArg, [moduleID]) => {
+    if (moduleID.startsWith(".")) {
+      moduleID = resolve(moduleID);
+      return target.apply(thisArg, [moduleID]);
+    }
+
+    const modulePath = target.resolve.apply(thisArg, [
+      moduleID,
+      {
+        // Webpack does not have an escape hatch for getting the actual
+        // module, other than `eval`.
+        paths: [process.cwd()],
+      },
+    ]);
+
+    return target.apply(thisArg, [modulePath]);
+  },
+
+  get: (target, prop, receiver) => {
+    Reflect.get(target, prop, receiver);
+  },
+});
 
 /**
  * Get a item from a file
@@ -87,10 +127,14 @@ const parseItemFile = async (
 
   if (caption) {
     // I know, I know...
-    const captionData = eval(`(function (data) {
-      const { slug, path, source, title, date, excerpt, attributes } = data;
-      ${caption}
-    })(${JSON.stringify(result)})`);
+    const captionData = await callAsyncFunction(
+      {
+        require: wrapRequire,
+        __original_require__: __non_webpack_require__,
+        ...result,
+      },
+      caption
+    );
     if (captionData) result.caption = captionData;
   }
 
