@@ -185,7 +185,7 @@ export const run = async () => {
           item.caption ? "**" : ""
         }${item.title || `\`${item.slug}\``}${item.caption ? "**" : ""}](./${directory}/${year}/${
           item.slug
-        })${item.caption ? `  \n  ${item.caption}\n\n` : "\n"}`;
+        })${item.caption ? `  \n  ${item.caption.split("\n").join("  \n  ")}\n\n` : "\n"}`;
         if (isPast) pastItems += text;
         else upcomingItems += text;
         addedYears.push(year);
