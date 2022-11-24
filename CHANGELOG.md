@@ -1,3 +1,15 @@
+## v1.4.4 (2022-11-24)
+
+[📝 Release notes](https://github.com/AnandChowdhary/notes-summary/releases/tag/v1.4.4) · [💻 Compare](https://github.com/AnandChowdhary/notes-summary/compare/v1.4.3...v1.4.4) · [🔖 Tag](https://github.com/AnandChowdhary/notes-summary/tree/v1.4.4) · 🗄️ Archive ([zip](https://github.com/AnandChowdhary/notes-summary/archive/v1.4.4.zip) · [tar.gz](https://github.com/AnandChowdhary/notes-summary/archive/v1.4.4.tar.gz))
+
+### ♻️ Updates
+
+- [`e696f1f`](https://github.com/AnandChowdhary/notes-summary/commit/e696f1f)  Allow date to be number (e.g., 2022)
+
+### 🐛 Bug fixes
+
+- [`fbad5a1`](https://github.com/AnandChowdhary/notes-summary/commit/fbad5a1)  Correctly parse year dates
+
 ## v1.4.3 (2022-11-22)
 
 [📝 Release notes](https://github.com/AnandChowdhary/notes-summary/releases/tag/v1.4.3) · [💻 Compare](https://github.com/AnandChowdhary/notes-summary/compare/v1.4.2...v1.4.3) · [🔖 Tag](https://github.com/AnandChowdhary/notes-summary/tree/v1.4.3) · 🗄️ Archive ([zip](https://github.com/AnandChowdhary/notes-summary/archive/v1.4.3.zip) · [tar.gz](https://github.com/AnandChowdhary/notes-summary/archive/v1.4.3.tar.gz))
