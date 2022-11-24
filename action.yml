@@ -11,9 +11,13 @@ inputs:
   commitMessage:
     required: false
     description: "Commit message"
-  dirName:
-    required: false
+  directory:
+    required: true
     description: "Directory name"
+  caption:
+    required: false
+    description: "JavaScript function to generate caption"
 branding:
   icon: "calendar"
   color: "green"
+ 

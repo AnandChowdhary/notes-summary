@@ -19,13 +19,13 @@ interface Item {
 
 /**
  * Get a item from a file
- * @param dirName - The directory where the file resides
+ * @param directory - The directory where the file resides
  * @param year - The year of the item
  * @param file - The file name
  * @returns Parsed item
  */
-const parseItemFile = async (dirName: string, year: string, file: string): Promise<Item> => {
-  const path = join(".", dirName, year, file);
+const parseItemFile = async (directory: string, year: string, file: string): Promise<Item> => {
+  const path = join(".", directory, year, file);
   const source = `https://github.com/${process.env.GITHUB_REPOSITORY}/blob/${process.env.GITHUB_REF_NAME}/${path}`;
   const contents = await readFile(path, "utf8");
   const { attributes, body } = frontMatter<{
@@ -48,7 +48,7 @@ const parseItemFile = async (dirName: string, year: string, file: string): Promi
       ? attributes.date
       : // Use git file creation date if no date is specified
         new Date(
-          execSync(`git log --format=%aD ${dirName}/${year}/${file} | tail -1`).toString().trim()
+          execSync(`git log --format=%aD ${directory}/${year}/${file} | tail -1`).toString().trim()
         );
 
   const title = (
@@ -84,8 +84,9 @@ const token = getInput("token") || process.env.GH_PAT || process.env.GITHUB_TOKE
 
 export const run = async () => {
   if (!token) throw new Error("GitHub token not found");
-  const dirName = getInput("dirName");
-  const commitMessage = getInput("commitMessage") || `:pencil: Update ${dirName} summary [skip ci]`;
+  const directory = getInput("directory");
+  const commitMessage =
+    getInput("commitMessage") || `:pencil: Update ${directory} summary [skip ci]`;
   const commitEmail =
     getInput("commitEmail") || "41898282+github-actions[bot]@users.noreply.github.com";
   const commitUsername = getInput("commitUsername") || "github-actions[bot]";
@@ -94,13 +95,13 @@ export const run = async () => {
   let totalItems = 0;
   let pastItems = "";
   let upcomingItems = "";
-  const years = await readdir(join(".", dirName));
+  const years = await readdir(join(".", directory));
   for await (const year of years) {
-    const items = await readdir(join(".", dirName, year));
+    const items = await readdir(join(".", directory, year));
     for await (const item of items) {
       totalItems++;
       allItems[year] = allItems[year] || [];
-      const itemFile = await parseItemFile(dirName, year, item);
+      const itemFile = await parseItemFile(directory, year, item);
       allItems[year].push(itemFile);
     }
   }
@@ -115,14 +116,14 @@ export const run = async () => {
         const isPast = new Date(item.date).getTime() < new Date().getTime();
         const text = `${addedYears.includes(year) ? "" : `### ${year}\n\n`}- [${
           item.title || `\`${item.slug}\``
-        }](./${dirName}/${year}/${item.slug})\n`;
+        }](./${directory}/${year}/${item.slug})\n`;
         if (isPast) pastItems += text;
         else upcomingItems += text;
         addedYears.push(year);
       });
     });
   let content = `## 🌯 Summary
-- ${totalItems} ${dirName} in ${years.length} years
+- ${totalItems} ${directory} in ${years.length} years
 `;
   if (upcomingItems.length) content += upcomingItems;
   if (pastItems.length) content += pastItems;
