@@ -7,29 +7,24 @@ import { format } from "prettier";
 import truncate from "truncate-sentences";
 import frontMatter from "front-matter";
 
-interface Note {
+interface Item {
   slug: string;
   path: string;
   source: string;
   title?: string;
   excerpt?: string;
   date: Date;
-  words: number;
   attributes?: Record<string, unknown>;
 }
 
 /**
- * Get a note from a file
+ * Get a item from a file
  * @param dirName - The directory where the file resides
- * @param year - The year of the note
+ * @param year - The year of the item
  * @param file - The file name
- * @returns Parsed note
+ * @returns Parsed item
  */
-const parseNoteFile = async (
-  dirName: string,
-  year: string,
-  file: string
-): Promise<Note> => {
+const parseItemFile = async (dirName: string, year: string, file: string): Promise<Item> => {
   const path = join(".", dirName, year, file);
   const source = `https://github.com/${process.env.GITHUB_REPOSITORY}/blob/${process.env.GITHUB_REF_NAME}/${path}`;
   const contents = await readFile(path, "utf8");
@@ -53,9 +48,7 @@ const parseNoteFile = async (
       ? attributes.date
       : // Use git file creation date if no date is specified
         new Date(
-          execSync(`git log --format=%aD ${dirName}/${year}/${file} | tail -1`)
-            .toString()
-            .trim()
+          execSync(`git log --format=%aD ${dirName}/${year}/${file} | tail -1`).toString().trim()
         );
 
   const title = (
@@ -68,14 +61,12 @@ const parseNoteFile = async (
   const excerpt =
     "excerpt" in attributes && typeof attributes.excerpt === "string"
       ? attributes.excerpt
-      : "description" in attributes &&
-        typeof attributes.description === "string"
+      : "description" in attributes && typeof attributes.description === "string"
       ? attributes.description
       : "summary" in attributes && typeof attributes.summary === "string"
       ? attributes.summary
       : body.indexOf(title) > -1
-      ? body.substring(body.indexOf(title) + title.length)?.trim() ??
-        body.trim()
+      ? body.substring(body.indexOf(title) + title.length)?.trim() ?? body.trim()
       : body.trim();
 
   return {
@@ -85,77 +76,66 @@ const parseNoteFile = async (
     title: title,
     date,
     excerpt: excerpt ? truncate(markdownToTxt(excerpt), 500) : undefined,
-    words: body.split(" ").length,
     attributes,
   };
 };
 
-const token =
-  getInput("token") || process.env.GH_PAT || process.env.GITHUB_TOKEN;
+const token = getInput("token") || process.env.GH_PAT || process.env.GITHUB_TOKEN;
 
 export const run = async () => {
   if (!token) throw new Error("GitHub token not found");
-  const commitMessage =
-    getInput("commitMessage") || ":pencil: Update notes summary [skip ci]";
+  const dirName = getInput("dirName");
+  const commitMessage = getInput("commitMessage") || `:pencil: Update ${dirName} summary [skip ci]`;
   const commitEmail =
-    getInput("commitEmail") ||
-    "41898282+github-actions[bot]@users.noreply.github.com";
+    getInput("commitEmail") || "41898282+github-actions[bot]@users.noreply.github.com";
   const commitUsername = getInput("commitUsername") || "github-actions[bot]";
-  const dirName = getInput("dirName") || "notes";
 
-  const allNotes: { [index: string]: Array<Note> } = {};
-  let totalNotes = 0;
-  let pastNotes = "";
-  let upcomingNotes = "";
+  const allItems: { [index: string]: Array<Item> } = {};
+  let totalItems = 0;
+  let pastItems = "";
+  let upcomingItems = "";
   const years = await readdir(join(".", dirName));
   for await (const year of years) {
-    const notes = await readdir(join(".", dirName, year));
-    for await (const note of notes) {
-      totalNotes++;
-      allNotes[year] = allNotes[year] || [];
-      const noteFile = await parseNoteFile(dirName, year, note);
-      allNotes[year].push(noteFile);
+    const items = await readdir(join(".", dirName, year));
+    for await (const item of items) {
+      totalItems++;
+      allItems[year] = allItems[year] || [];
+      const itemFile = await parseItemFile(dirName, year, item);
+      allItems[year].push(itemFile);
     }
   }
-  Object.keys(allNotes)
+  Object.keys(allItems)
     .sort((a, b) => parseInt(b) - parseInt(a))
     .forEach((year) => {
-      allNotes[year] = allNotes[year].sort(
+      allItems[year] = allItems[year].sort(
         (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
       );
       let addedYears: Array<string> = [];
-      allNotes[year].forEach((note) => {
-        const isPast = new Date(note.date).getTime() < new Date().getTime();
+      allItems[year].forEach((item) => {
+        const isPast = new Date(item.date).getTime() < new Date().getTime();
         const text = `${addedYears.includes(year) ? "" : `### ${year}\n\n`}- [${
-          note.title || `\`${note.slug}\``
-        }](./${dirName}/${year}/${note.slug}) (${note.words.toLocaleString(
-          "en-US"
-        )} words), ${new Date(note.date).toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        })}\n`;
-        if (isPast) pastNotes += text;
-        else upcomingNotes += text;
+          item.title || `\`${item.slug}\``
+        }](./${dirName}/${year}/${item.slug})\n`;
+        if (isPast) pastItems += text;
+        else upcomingItems += text;
         addedYears.push(year);
       });
     });
   let content = `## 🌯 Summary
-- ${totalNotes} notes in ${years.length} years
+- ${totalItems} ${dirName} in ${years.length} years
 `;
-  if (upcomingNotes.length) content += upcomingNotes;
-  if (pastNotes.length) content += pastNotes;
-  const originalReadmeContents = format(
-    await readFile(join(".", "README.md"), "utf-8"),
-    { parser: "markdown" }
-  );
+  if (upcomingItems.length) content += upcomingItems;
+  if (pastItems.length) content += pastItems;
+  const originalReadmeContents = format(await readFile(join(".", "README.md"), "utf-8"), {
+    parser: "markdown",
+  });
   await writeFile(
     join(".", "README.md"),
     format(
       `${
-        originalReadmeContents.split("<!--notes-->")[0]
-      }<!--notes-->\n\n${content.trim()}\n<!--/notes-->${
-        originalReadmeContents.split("<!--/notes-->")[1]
+        originalReadmeContents.split("<!--autogenerated-->")[0]
+      }<!--autogenerated-->\n\n${content.trim()}\n<!--/autogenerated-->${
+        originalReadmeContents.split("<!--/autogenerated-->")[1]
       }`,
       { parser: "markdown" }
     )
@@ -163,11 +143,9 @@ export const run = async () => {
   await writeFile(
     join(".", "api.json"),
     JSON.stringify(
-      Object.values(allNotes)
+      Object.values(allItems)
         .flat()
-        .sort(
-          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-        ),
+        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()),
       null,
       2
     ) + "\n"
@@ -180,16 +158,15 @@ export const run = async () => {
       stdio: "inherit",
     });
     execSync("git pull", { stdio: "inherit" });
-    execSync(
-      `git diff --quiet && git diff --staged --quiet || git commit -am "${commitMessage}"`,
-      { stdio: "inherit" }
-    );
+    execSync(`git diff --quiet && git diff --staged --quiet || git commit -am "${commitMessage}"`, {
+      stdio: "inherit",
+    });
     execSync("git push", { stdio: "inherit" });
   } catch (error) {
     console.error(String(error));
     throw new Error(error as any);
   }
-  setOutput("number-of-notes", totalNotes);
+  setOutput("number-of-items", totalItems);
 };
 
 run().catch((error) => {
