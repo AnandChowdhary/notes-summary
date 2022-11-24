@@ -86,37 +86,19 @@ const parseItemFile = async (
   };
 
   if (caption) {
-    const captionData = await callAsyncFunction(
-      { ...result, require, __original_require__: require },
-      caption
-    );
+    // I know, I know...
+    const captionData = eval(`(function (data) {
+      const { slug, path, source, title, date, excerpt, attributes } = data;
+      ${caption}
+    })(${JSON.stringify(result)})`);
     if (captionData) result.caption = captionData;
   }
 
   return result;
 };
 
-const token = getInput("token") || process.env.GH_PAT || process.env.GITHUB_TOKEN;
-
-const AsyncFunction = Object.getPrototypeOf(async () => null).constructor;
-type AsyncFunctionArguments = Item & {
-  require: NodeRequire;
-  __original_require__: NodeRequire;
-};
-
-/**
- * Call as async function with arguments
- * @param args
- * @param source
- * @link https://github.com/actions/github-script/blob/main/src/async-function.ts
- * @returns
- */
-export function callAsyncFunction(args: AsyncFunctionArguments, source: string): Promise<string> {
-  const fn = new AsyncFunction(...Object.keys(args), source);
-  return fn(...Object.values(args));
-}
-
 export const run = async () => {
+  const token = getInput("token") || process.env.GH_PAT || process.env.GITHUB_TOKEN;
   if (!token) throw new Error("GitHub token not found");
   const directory = getInput("directory");
   const caption = getInput("caption");
