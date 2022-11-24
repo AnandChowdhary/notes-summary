@@ -20,17 +20,23 @@ interface Item {
   caption?: string;
 }
 
-const AsyncFunction = Object.getPrototypeOf(async () => null).constructor;
-
-type AsyncFunctionArguments = Item & {
-  require: NodeRequire;
-  __original_require__: NodeRequire;
-};
-
+/**
+ * Execute a function with the given arguments using eval
+ * Largely based on actions/github-script
+ * @param args - Arguments for the async function
+ * @param source - The source code of the async function as a string
+ * @returns The result of the async function
+ * @link https://github.com/actions/github-script/blob/v6.3.3/src/async-function.ts#L21
+ * @license MIT
+ */
 export function callAsyncFunction<T = string>(
-  args: AsyncFunctionArguments,
+  args: Item & {
+    require: NodeRequire;
+    __original_require__: NodeRequire;
+  },
   source: string
 ): Promise<T> {
+  const AsyncFunction = Object.getPrototypeOf(async () => null).constructor;
   const fn = new AsyncFunction(...Object.keys(args), source);
   return fn(...Object.values(args));
 }
@@ -179,7 +185,7 @@ export const run = async () => {
           item.caption ? "**" : ""
         }${item.title || `\`${item.slug}\``}${item.caption ? "**" : ""}](./${directory}/${year}/${
           item.slug
-        })\n${item.caption ? `  ${item.caption}\n\n` : ""}`;
+        })${item.caption ? `  \n  ${item.caption}\n\n` : "\n"}`;
         if (isPast) pastItems += text;
         else upcomingItems += text;
         addedYears.push(year);
