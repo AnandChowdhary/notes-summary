@@ -15,6 +15,7 @@ interface Item {
   excerpt?: string;
   date: Date;
   attributes?: Record<string, unknown>;
+  caption?: string;
 }
 
 /**
@@ -24,7 +25,12 @@ interface Item {
  * @param file - The file name
  * @returns Parsed item
  */
-const parseItemFile = async (directory: string, year: string, file: string): Promise<Item> => {
+const parseItemFile = async (
+  directory: string,
+  year: string,
+  file: string,
+  caption?: string
+): Promise<Item> => {
   const path = join(".", directory, year, file);
   const source = `https://github.com/${process.env.GITHUB_REPOSITORY}/blob/${process.env.GITHUB_REF_NAME}/${path}`;
   const contents = await readFile(path, "utf8");
@@ -69,7 +75,7 @@ const parseItemFile = async (directory: string, year: string, file: string): Pro
       ? body.substring(body.indexOf(title) + title.length)?.trim() ?? body.trim()
       : body.trim();
 
-  return {
+  const result: Item = {
     slug: file,
     path,
     source,
@@ -78,13 +84,42 @@ const parseItemFile = async (directory: string, year: string, file: string): Pro
     excerpt: excerpt ? truncate(markdownToTxt(excerpt), 500) : undefined,
     attributes,
   };
+
+  if (caption) {
+    const captionData = await callAsyncFunction(
+      { ...result, require, __original_require__: require },
+      caption
+    );
+    if (captionData) result.caption = captionData;
+  }
+
+  return result;
 };
 
 const token = getInput("token") || process.env.GH_PAT || process.env.GITHUB_TOKEN;
 
+const AsyncFunction = Object.getPrototypeOf(async () => null).constructor;
+type AsyncFunctionArguments = Item & {
+  require: NodeRequire;
+  __original_require__: NodeRequire;
+};
+
+/**
+ * Call as async function with arguments
+ * @param args
+ * @param source
+ * @link https://github.com/actions/github-script/blob/main/src/async-function.ts
+ * @returns
+ */
+export function callAsyncFunction(args: AsyncFunctionArguments, source: string): Promise<string> {
+  const fn = new AsyncFunction(...Object.keys(args), source);
+  return fn(...Object.values(args));
+}
+
 export const run = async () => {
   if (!token) throw new Error("GitHub token not found");
   const directory = getInput("directory");
+  const caption = getInput("caption");
   const commitMessage =
     getInput("commitMessage") || `:pencil: Update ${directory} summary [skip ci]`;
   const commitEmail =
@@ -101,7 +136,7 @@ export const run = async () => {
     for await (const item of items) {
       totalItems++;
       allItems[year] = allItems[year] || [];
-      const itemFile = await parseItemFile(directory, year, item);
+      const itemFile = await parseItemFile(directory, year, item, caption);
       allItems[year].push(itemFile);
     }
   }
@@ -115,8 +150,10 @@ export const run = async () => {
       allItems[year].forEach((item) => {
         const isPast = new Date(item.date).getTime() < new Date().getTime();
         const text = `${addedYears.includes(year) ? "" : `### ${year}\n\n`}- [${
-          item.title || `\`${item.slug}\``
-        }](./${directory}/${year}/${item.slug})\n`;
+          item.caption ? "**" : ""
+        }${item.title || `\`${item.slug}\``}${item.caption ? "**" : ""}](./${directory}/${year}/${
+          item.slug
+        })\n${item.caption ? `  ${item.caption}\n\n` : ""}`;
         if (isPast) pastItems += text;
         else upcomingItems += text;
         addedYears.push(year);
