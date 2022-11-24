@@ -25,7 +25,11 @@ interface Note {
  * @param file - The file name
  * @returns Parsed note
  */
-const parseNoteFile = async (dirName: string, year: string, file: string): Promise<Note> => {
+const parseNoteFile = async (
+  dirName: string,
+  year: string,
+  file: string
+): Promise<Note> => {
   const path = join(".", dirName, year, file);
   const source = `https://github.com/${process.env.GITHUB_REPOSITORY}/blob/${process.env.GITHUB_REF_NAME}/${path}`;
   const contents = await readFile(path, "utf8");
@@ -41,12 +45,17 @@ const parseNoteFile = async (dirName: string, year: string, file: string): Promi
     "date" in attributes && typeof attributes.date === "string"
       ? new Date(attributes.date)
       : "date" in attributes && typeof attributes.date === "number"
-      ? new Date(attributes.date)
+      ? // Arbitiary rule to differentiate ms timestamp from year
+        attributes.date < 3000
+        ? new Date(`${attributes.date}-01-01`)
+        : new Date(attributes.date)
       : "date" in attributes && attributes.date instanceof Date
       ? attributes.date
       : // Use git file creation date if no date is specified
         new Date(
-          execSync(`git log --format=%aD ${dirName}/${year}/${file} | tail -1`).toString().trim()
+          execSync(`git log --format=%aD ${dirName}/${year}/${file} | tail -1`)
+            .toString()
+            .trim()
         );
 
   const title = (
@@ -59,12 +68,14 @@ const parseNoteFile = async (dirName: string, year: string, file: string): Promi
   const excerpt =
     "excerpt" in attributes && typeof attributes.excerpt === "string"
       ? attributes.excerpt
-      : "description" in attributes && typeof attributes.description === "string"
+      : "description" in attributes &&
+        typeof attributes.description === "string"
       ? attributes.description
       : "summary" in attributes && typeof attributes.summary === "string"
       ? attributes.summary
       : body.indexOf(title) > -1
-      ? body.substring(body.indexOf(title) + title.length)?.trim() ?? body.trim()
+      ? body.substring(body.indexOf(title) + title.length)?.trim() ??
+        body.trim()
       : body.trim();
 
   return {
@@ -79,13 +90,16 @@ const parseNoteFile = async (dirName: string, year: string, file: string): Promi
   };
 };
 
-const token = getInput("token") || process.env.GH_PAT || process.env.GITHUB_TOKEN;
+const token =
+  getInput("token") || process.env.GH_PAT || process.env.GITHUB_TOKEN;
 
 export const run = async () => {
   if (!token) throw new Error("GitHub token not found");
-  const commitMessage = getInput("commitMessage") || ":pencil: Update notes summary [skip ci]";
+  const commitMessage =
+    getInput("commitMessage") || ":pencil: Update notes summary [skip ci]";
   const commitEmail =
-    getInput("commitEmail") || "41898282+github-actions[bot]@users.noreply.github.com";
+    getInput("commitEmail") ||
+    "41898282+github-actions[bot]@users.noreply.github.com";
   const commitUsername = getInput("commitUsername") || "github-actions[bot]";
   const dirName = getInput("dirName") || "notes";
 
@@ -131,9 +145,10 @@ export const run = async () => {
 `;
   if (upcomingNotes.length) content += upcomingNotes;
   if (pastNotes.length) content += pastNotes;
-  const originalReadmeContents = format(await readFile(join(".", "README.md"), "utf-8"), {
-    parser: "markdown",
-  });
+  const originalReadmeContents = format(
+    await readFile(join(".", "README.md"), "utf-8"),
+    { parser: "markdown" }
+  );
   await writeFile(
     join(".", "README.md"),
     format(
@@ -150,18 +165,25 @@ export const run = async () => {
     JSON.stringify(
       Object.values(allNotes)
         .flat()
-        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()),
+        .sort(
+          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+        ),
       null,
       2
     ) + "\n"
   );
   try {
-    execSync(`git config --global user.email "${commitEmail}"`, { stdio: "inherit" });
-    execSync(`git config --global user.name "${commitUsername}"`, { stdio: "inherit" });
-    execSync("git pull", { stdio: "inherit" });
-    execSync(`git diff --quiet && git diff --staged --quiet || git commit -am "${commitMessage}"`, {
+    execSync(`git config --global user.email "${commitEmail}"`, {
       stdio: "inherit",
     });
+    execSync(`git config --global user.name "${commitUsername}"`, {
+      stdio: "inherit",
+    });
+    execSync("git pull", { stdio: "inherit" });
+    execSync(
+      `git diff --quiet && git diff --staged --quiet || git commit -am "${commitMessage}"`,
+      { stdio: "inherit" }
+    );
     execSync("git push", { stdio: "inherit" });
   } catch (error) {
     console.error(String(error));
