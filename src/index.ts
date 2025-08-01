@@ -66,46 +66,44 @@ export const wrapRequire = new Proxy(__non_webpack_require__, {
 });
 
 const getEmoji = async (title: string, excerpt: string): Promise<string | undefined> => {
-  const token = getInput("token") || process.env.GH_PAT || process.env.GITHUB_TOKEN;
-  if (!token) throw new Error("GitHub token not found");
+  const token = getInput("openAiApiKey") || process.env.OPENAI_API_KEY;
+  const model = getInput("openAiModel") || "gpt-4.1-mini";
 
-  try {
-    const response = await fetch("https://models.github.ai/inference/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        model: "openai/gpt-4.1-mini",
-        messages: [
-          {
-            role: "system",
-            content: `Generate 3 emojis representing the given note. Respond only with exactly three emojis, no other text.`,
-          },
-          {
-            role: "user",
-            content: `Title: Startup Visa Application\nExcerpt: Many governments have a some conditions for the startup visa: Working together with a facilitator, the product or service is innovative...`,
-          },
-          { role: "assistant", content: `🌍💼🚀` },
-          {
-            role: "user",
-            content: `Title: How to upload a file to Google Drive using Python\nExcerpt: To upload a file to Google Drive using Python, you can use the Google Drive API. This API allows you to upload files to Google Drive, create folders, and manage files and folders.`,
-          },
-          { role: "assistant", content: `🐍💾☁️` },
-          {
-            role: "user",
-            content: `Title: ${title}\nExcerpt: ${excerpt}`,
-          },
-        ],
-      }),
-    });
-    const data = await response.json();
-    return data.choices[0].message.content;
-  } catch (error) {
-    console.error(error);
-    return undefined;
-  }
+  if (token)
+    try {
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          model,
+          messages: [
+            {
+              role: "system",
+              content: `Generate 3 emojis representing the given note. Respond only with exactly three emojis, no other text.`,
+            },
+            {
+              role: "user",
+              content: `Title: Startup Visa Application\nExcerpt: Many governments have a some conditions for the startup visa: Working together with a facilitator, the product or service is innovative...`,
+            },
+            { role: "assistant", content: `🌍💼🚀` },
+            {
+              role: "user",
+              content: `Title: How to upload a file to Google Drive using Python\nExcerpt: To upload a file to Google Drive using Python, you can use the Google Drive API. This API allows you to upload files to Google Drive, create folders, and manage files and folders.`,
+            },
+            { role: "assistant", content: `🐍💾☁️` },
+            {
+              role: "user",
+              content: `Title: ${title}\nExcerpt: ${excerpt}`,
+            },
+          ],
+        }),
+      });
+      const data = await response.json();
+      return data.choices[0].message.content;
+    } catch (error) {
+      console.error(error);
+      return undefined;
+    }
 };
 
 /**

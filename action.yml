@@ -17,7 +17,13 @@ inputs:
   caption:
     required: false
     description: "JavaScript function to generate caption"
+  openAiApiKey:
+    required: false
+    description: "OpenAI API key used to generate emojis"
+  openAiModel:
+    required: false
+    description: "OpenAI model to use for emoji generation"
+    default: "gpt-4.1-mini"
 branding:
   icon: "calendar"
   color: "green"
- 
