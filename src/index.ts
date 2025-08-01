@@ -18,6 +18,7 @@ interface Item {
   date: Date;
   attributes?: Record<string, unknown>;
   caption?: string;
+  emoji?: string;
 }
 
 /**
@@ -64,6 +65,49 @@ export const wrapRequire = new Proxy(__non_webpack_require__, {
   },
 });
 
+const getEmoji = async (title: string, excerpt: string): Promise<string | undefined> => {
+  const token = getInput("token") || process.env.GH_PAT || process.env.GITHUB_TOKEN;
+  if (!token) throw new Error("GitHub token not found");
+
+  try {
+    const response = await fetch("https://models.github.ai/inference/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        model: "openai/gpt-4.1-mini",
+        messages: [
+          {
+            role: "system",
+            content: `Generate 3 emojis representing the given note. Respond only with exactly three emojis, no other text.`,
+          },
+          {
+            role: "user",
+            content: `Title: Startup Visa Application\nExcerpt: Many governments have a some conditions for the startup visa: Working together with a facilitator, the product or service is innovative...`,
+          },
+          { role: "assistant", content: `🌍💼🚀` },
+          {
+            role: "user",
+            content: `Title: How to upload a file to Google Drive using Python\nExcerpt: To upload a file to Google Drive using Python, you can use the Google Drive API. This API allows you to upload files to Google Drive, create folders, and manage files and folders.`,
+          },
+          { role: "assistant", content: `🐍💾☁️` },
+          {
+            role: "user",
+            content: `Title: ${title}\nExcerpt: ${excerpt}`,
+          },
+        ],
+      }),
+    });
+    const data = await response.json();
+    return data.choices[0].message.content;
+  } catch (error) {
+    console.error(error);
+    return undefined;
+  }
+};
+
 /**
  * Get a item from a file
  * @param directory - The directory where the file resides
@@ -75,7 +119,8 @@ const parseItemFile = async (
   directory: string,
   year: string,
   file: string,
-  caption?: string
+  caption?: string,
+  currentApi?: Array<Item>
 ): Promise<Item> => {
   const path = join(".", directory, year, file);
   const source = `https://github.com/${process.env.GITHUB_REPOSITORY}/blob/${process.env.GITHUB_REF_NAME}/${path}`;
@@ -134,6 +179,17 @@ const parseItemFile = async (
       ? body.substring(body.indexOf(title) + title.length)?.trim() ?? body.trim()
       : body.trim();
 
+  const previousItem = currentApi?.find(({ slug }) => slug === file);
+
+  // If the emoji is already set, use it
+  let emoji: string | undefined = previousItem?.emoji;
+  if (!emoji) {
+    emoji =
+      "emoji" in attributes && typeof attributes.emoji === "string"
+        ? attributes.emoji
+        : await getEmoji(title, excerpt);
+  }
+
   const result: Item = {
     slug: file,
     path,
@@ -142,6 +198,7 @@ const parseItemFile = async (
     date,
     excerpt: excerpt ? truncate(markdownToTxt(excerpt), 500) : undefined,
     attributes,
+    emoji,
   };
 
   if (caption) {
@@ -171,6 +228,15 @@ export const run = async () => {
     getInput("commitEmail") || "41898282+github-actions[bot]@users.noreply.github.com";
   const commitUsername = getInput("commitUsername") || "github-actions[bot]";
 
+  const currentApi: Array<Item> = await (async () => {
+    try {
+      const api = await readFile(join(".", "api.json"), "utf-8");
+      return JSON.parse(api);
+    } catch (error) {
+      return [];
+    }
+  })();
+
   const allItems: { [index: string]: Array<Item> } = {};
   let totalItems = 0;
   let pastItems = "";
@@ -186,7 +252,7 @@ export const run = async () => {
     for await (const item of items) {
       totalItems++;
       allItems[year] = allItems[year] || [];
-      const itemFile = await parseItemFile(directory, year, item, caption);
+      const itemFile = await parseItemFile(directory, year, item, caption, currentApi);
       allItems[year].push(itemFile);
     }
   }
