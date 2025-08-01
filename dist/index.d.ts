@@ -8,6 +8,7 @@ interface Item {
     date: Date;
     attributes?: Record<string, unknown>;
     caption?: string;
+    emoji?: string;
 }
 /**
  * Execute a function with the given arguments using eval
