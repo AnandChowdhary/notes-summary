@@ -103,11 +103,24 @@ const parseItemFile = async (
           execSync(`git log --format=%aD ${directory}/${year}/${file} | tail -1`).toString().trim()
         );
 
-  const title = (
+  let title = (
     "title" in attributes && typeof attributes.title === "string"
       ? attributes.title
       : body.match(/^# (.*)/m)?.[1]
   )?.trim();
+
+  // If no title found, extract first few words from the post content
+  if (!title) {
+    const plainText = markdownToTxt(body).trim();
+    const words = plainText.split(/\s+/).filter((word) => word.length > 0);
+    if (words.length > 0) {
+      // Take first 6 words and add ellipsis
+      const wordCount = Math.min(words.length, 6);
+      const titleWords = words.slice(0, wordCount);
+      title = titleWords.join(" ") + "...";
+    }
+  }
+
   if (!title) throw new Error(`Unable to parse title in ${path}`);
 
   const excerpt =
