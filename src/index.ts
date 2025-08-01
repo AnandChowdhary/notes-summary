@@ -164,6 +164,11 @@ export const run = async () => {
   let upcomingItems = "";
   const years = await readdir(join(".", directory));
   for await (const year of years) {
+    if (!/^\d{4}$/.test(year)) {
+      console.warn(`Skipping non-numeric year: ${year}`);
+      continue;
+    }
+
     const items = await readdir(join(".", directory, year));
     for await (const item of items) {
       totalItems++;
