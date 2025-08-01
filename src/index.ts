@@ -265,9 +265,11 @@ export const run = async () => {
         const isPast = new Date(item.date).getTime() < new Date().getTime();
         const text = `${addedYears.includes(year) ? "" : `### ${year}\n\n`}- [${
           item.caption ? "**" : ""
-        }${item.title || `\`${item.slug}\``}${item.caption ? "**" : ""}](./${directory}/${year}/${
-          item.slug
-        })${item.caption ? `  \n  ${item.caption.split("\n").join("  \n  ")}\n\n` : "\n"}`;
+        }${item.emoji ? ` ${item.emoji}` : ""}${item.title || `\`${item.slug}\``}${
+          item.caption ? "**" : ""
+        }](./${directory}/${year}/${item.slug})${
+          item.caption ? `  \n  ${item.caption.split("\n").join("  \n  ")}\n\n` : "\n"
+        }`;
         if (isPast) pastItems += text;
         else upcomingItems += text;
         addedYears.push(year);
