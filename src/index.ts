@@ -67,7 +67,7 @@ export const wrapRequire = new Proxy(__non_webpack_require__, {
 
 const getEmoji = async (title: string, excerpt: string): Promise<string | undefined> => {
   const token = getInput("openAiApiKey") || process.env.OPENAI_API_KEY;
-  const model = getInput("openAiModel") || "gpt-4.1-mini";
+  const model = getInput("openAiModel") || "gpt-5-nano";
 
   if (token)
     try {
