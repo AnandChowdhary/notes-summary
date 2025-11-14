@@ -263,9 +263,9 @@ export const run = async () => {
       let addedYears: Array<string> = [];
       allItems[year].forEach((item) => {
         const isPast = new Date(item.date).getTime() < new Date().getTime();
-        const text = `${addedYears.includes(year) ? "" : `### ${year}\n\n`}- [${
+        const text = `${addedYears.includes(year) ? "" : `### ${year}\n\n`}- ${item.emoji ? `${item.emoji} ` : ""}[${
           item.caption ? "**" : ""
-        }${item.emoji ? ` ${item.emoji}` : ""}${item.title || `\`${item.slug}\``}${
+        }${item.title || `\`${item.slug}\``}${
           item.caption ? "**" : ""
         }](./${directory}/${year}/${item.slug})${
           item.caption ? `  \n  ${item.caption.split("\n").join("  \n  ")}\n\n` : "\n"
