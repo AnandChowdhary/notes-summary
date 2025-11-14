@@ -1,3 +1,24 @@
+## v1.6.0 (2025-11-14)
+
+[📝 Release notes](https://github.com/AnandChowdhary/notes-summary/releases/tag/v1.6.0) · [💻 Compare](https://github.com/AnandChowdhary/notes-summary/compare/v1.5.0...v1.6.0) · [🔖 Tag](https://github.com/AnandChowdhary/notes-summary/tree/v1.6.0) · 🗄️ Archive ([zip](https://github.com/AnandChowdhary/notes-summary/archive/v1.6.0.zip) · [tar.gz](https://github.com/AnandChowdhary/notes-summary/archive/v1.6.0.tar.gz))
+
+### ✨ New features
+
+- [`34e854e`](https://github.com/AnandChowdhary/notes-summary/commit/34e854e)  Enhance title extraction logic to fallback on post content if no title is provided
+- [`8c7e4b5`](https://github.com/AnandChowdhary/notes-summary/commit/8c7e4b5)  Add emoji generation feature and update item parsing to include emojis
+- [`23c6f83`](https://github.com/AnandChowdhary/notes-summary/commit/23c6f83)  Update item display to include emojis in titles
+
+### ♻️ Updates
+
+- [`17ed7c1`](https://github.com/AnandChowdhary/notes-summary/commit/17ed7c1)  Update OpenAI model to gpt-5-nano
+
+### 🐛 Bug fixes
+
+- [`31880d2`](https://github.com/AnandChowdhary/notes-summary/commit/31880d2)  Add support for multi-line captions
+- [`10158c6`](https://github.com/AnandChowdhary/notes-summary/commit/10158c6)  Add validation for year format in directory listing
+- [`d359287`](https://github.com/AnandChowdhary/notes-summary/commit/d359287)  Add OpenAI API integration for emoji generation with customizable model and API key
+- [`0489925`](https://github.com/AnandChowdhary/notes-summary/commit/0489925)  Fix formatting in index.ts for item display
+
 ## v1.5.0 (2022-11-24)
 
 [📝 Release notes](https://github.com/AnandChowdhary/notes-summary/releases/tag/v1.5.0) · [💻 Compare](https://github.com/AnandChowdhary/notes-summary/compare/v1.4.4...v1.5.0) · [🔖 Tag](https://github.com/AnandChowdhary/notes-summary/tree/v1.5.0) · 🗄️ Archive ([zip](https://github.com/AnandChowdhary/notes-summary/archive/v1.5.0.zip) · [tar.gz](https://github.com/AnandChowdhary/notes-summary/archive/v1.5.0.tar.gz))
