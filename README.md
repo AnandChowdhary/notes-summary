@@ -54,6 +54,9 @@ jobs:
     runs-on: ubuntu-latest
     # Don't run this workflow when [skip ci] is passed
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    permissions:
+      contents: write # Required to commit and push changes
+      models: read # Required to access GitHub Models API for emoji generation
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -72,6 +75,17 @@ Your `README.md` file should then contains a summary of the notes in the `notes`
 ![Screenshot of README.md](https://user-images.githubusercontent.com/2841780/99380828-78454600-28f0-11eb-872c-e2a841bb27c7.png)
 
 ## 🛠️ Configuration
+
+### Required Permissions
+
+This action requires the following permissions for the `GITHUB_TOKEN`:
+
+- **`contents: write`** - Required to read files, write `README.md` and `api.json`, and push commits to the repository
+- **`models: read`** - Required to access GitHub Models API for AI-powered emoji generation
+
+See the example workflow above for how to configure these permissions.
+
+### Input Parameters
 
 | Property         | Description                                                                                        | Required |
 | ---------------- | -------------------------------------------------------------------------------------------------- | -------- |
