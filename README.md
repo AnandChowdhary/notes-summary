@@ -87,16 +87,15 @@ See the example workflow above for how to configure these permissions.
 
 ### Input Parameters
 
-| Property         | Description                                                                                        | Required |
-| ---------------- | -------------------------------------------------------------------------------------------------- | -------- |
-| `token`          | GitHub token                                                                                       | Yes      |
-| `directory`      | Directory                                                                                          | Yes      |
-| `caption`        | JS function                                                                                        | No       |
-| `commitMessage`  | Commit message                                                                                     | No       |
-| `commitEmail`    | Commit email                                                                                       | No       |
-| `commitUsername` | Commit username                                                                                    | No       |
-| `githubToken`    | GitHub token for accessing GitHub Models API (defaults to `GITHUB_TOKEN` from Actions environment) | No       |
-| `aiModel`        | AI model to use for emoji generation via GitHub Models (default: `gpt-5.1-nano`)                   | No       |
+| Property         | Description                                                                      | Required |
+| ---------------- | -------------------------------------------------------------------------------- | -------- |
+| `token`          | GitHub token                                                                     | Yes      |
+| `directory`      | Directory                                                                        | Yes      |
+| `caption`        | JS function                                                                      | No       |
+| `commitMessage`  | Commit message                                                                   | No       |
+| `commitEmail`    | Commit email                                                                     | No       |
+| `commitUsername` | Commit username                                                                  | No       |
+| `aiModel`        | AI model to use for emoji generation via GitHub Models (default: `gpt-5.1-nano`) | No       |
 
 ## 📄 License
 

@@ -17,9 +17,6 @@ inputs:
   caption:
     required: false
     description: "JavaScript function to generate caption"
-  githubToken:
-    required: false
-    description: "GitHub token for accessing GitHub Models API (defaults to GITHUB_TOKEN from Actions environment)"
   aiModel:
     required: false
     description: "AI model to use for emoji generation via GitHub Models"
