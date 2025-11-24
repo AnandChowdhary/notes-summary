@@ -166,8 +166,6 @@ const parseItemFile = async (
     }
   }
 
-  if ("draft" in attributes && attributes.draft === true) title = `[DRAFT] ${title}`;
-
   if (!title) throw new Error(`Unable to parse title in ${path}`);
 
   const excerpt =
@@ -269,6 +267,13 @@ export const run = async () => {
         const isPast = new Date(item.date).getTime() < new Date().getTime();
         const text = `${addedYears.includes(year) ? "" : `### ${year}\n\n`}- ${
           item.emoji ? `${item.emoji} ` : ""
+        }${
+          typeof item.attributes === "object" &&
+          item.attributes !== null &&
+          "draft" in item.attributes &&
+          item.attributes.draft === true
+            ? "`[DRAFT]` "
+            : ""
         }[${item.caption ? "**" : ""}${item.title || `\`${item.slug}\``}${
           item.caption ? "**" : ""
         }](./${directory}/${year}/${item.slug})${
