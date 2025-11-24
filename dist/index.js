@@ -57,9 +57,9 @@ exports.wrapRequire = new Proxy(eval("require"), {
 const getEmoji = async (title, excerpt) => {
     // Use GitHub token from Actions environment or from input
     const token = process.env.GITHUB_TOKEN || (0, core_1.getInput)("token");
-    const model = (0, core_1.getInput)("aiModel") || "gpt-5.1-nano";
+    const model = (0, core_1.getInput)("aiModel") || "gpt-5-nano";
     try {
-        const response = await fetch("https://models.inference.ai.azure.com/chat/completions", {
+        const response = await fetch("https://models.github.ai/inference/chat/completions", {
             method: "POST",
             headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
             body: JSON.stringify({
@@ -87,6 +87,9 @@ const getEmoji = async (title, excerpt) => {
             }),
         });
         const data = await response.json();
+        console.log("LLM response", JSON.stringify(data, null, 2));
+        if (data.choices.length === 0)
+            throw new Error("No choices returned from AI model");
         return data.choices[0].message.content;
     }
     catch (error) {
