@@ -130,6 +130,7 @@ const parseItemFile = async (
     excerpt?: unknown;
     description?: unknown;
     summary?: unknown;
+    draft?: boolean;
   }>(contents);
 
   const date: Date =
@@ -164,6 +165,8 @@ const parseItemFile = async (
       title = titleWords.join(" ") + "...";
     }
   }
+
+  if ("draft" in attributes && attributes.draft === true) title = `[DRAFT] ${title}`;
 
   if (!title) throw new Error(`Unable to parse title in ${path}`);
 
