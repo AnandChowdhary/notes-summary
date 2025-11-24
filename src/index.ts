@@ -68,10 +68,10 @@ export const wrapRequire = new Proxy(__non_webpack_require__, {
 const getEmoji = async (title: string, excerpt: string): Promise<string | undefined> => {
   // Use GitHub token from Actions environment or from input
   const token = process.env.GITHUB_TOKEN || getInput("token");
-  const model = getInput("aiModel") || "gpt-5.1-nano";
+  const model = getInput("aiModel") || "gpt-5-nano";
 
   try {
-    const response = await fetch("https://models.inference.ai.azure.com/chat/completions", {
+    const response = await fetch("https://models.github.ai/inference/chat/completions", {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
       body: JSON.stringify({
@@ -99,6 +99,8 @@ const getEmoji = async (title: string, excerpt: string): Promise<string | undefi
       }),
     });
     const data = await response.json();
+    console.log("LLM response", JSON.stringify(data, null, 2));
+    if (data.choices.length === 0) throw new Error("No choices returned from AI model");
     return data.choices[0].message.content;
   } catch (error) {
     console.error(error);

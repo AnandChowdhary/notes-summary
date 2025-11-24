@@ -20,7 +20,7 @@ inputs:
   aiModel:
     required: false
     description: "AI model to use for emoji generation via GitHub Models"
-    default: "gpt-5.1-nano"
+    default: "gpt-5-nano"
 branding:
   icon: "calendar"
   color: "green"
