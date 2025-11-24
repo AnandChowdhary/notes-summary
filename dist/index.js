@@ -55,11 +55,12 @@ exports.wrapRequire = new Proxy(eval("require"), {
     },
 });
 const getEmoji = async (title, excerpt) => {
-    const token = (0, core_1.getInput)("openAiApiKey") || process.env.OPENAI_API_KEY;
-    const model = (0, core_1.getInput)("openAiModel") || "gpt-5-nano";
+    // Use GitHub token from Actions environment or from input
+    const token = process.env.GITHUB_TOKEN || (0, core_1.getInput)("githubToken");
+    const model = (0, core_1.getInput)("aiModel") || "gpt-5.1-nano";
     if (token)
         try {
-            const response = await fetch("https://api.openai.com/v1/chat/completions", {
+            const response = await fetch("https://models.inference.ai.azure.com/chat/completions", {
                 method: "POST",
                 headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
                 body: JSON.stringify({
