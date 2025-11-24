@@ -132,6 +132,8 @@ const parseItemFile = async (directory, year, file, caption, currentApi) => {
             title = titleWords.join(" ") + "...";
         }
     }
+    if ("draft" in attributes && attributes.draft === true)
+        title = `[DRAFT] ${title}`;
     if (!title)
         throw new Error(`Unable to parse title in ${path}`);
     const excerpt = "excerpt" in attributes && typeof attributes.excerpt === "string"
