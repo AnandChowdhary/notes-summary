@@ -17,13 +17,13 @@ inputs:
   caption:
     required: false
     description: "JavaScript function to generate caption"
-  openAiApiKey:
+  githubToken:
     required: false
-    description: "OpenAI API key used to generate emojis"
-  openAiModel:
+    description: "GitHub token for accessing GitHub Models API (defaults to GITHUB_TOKEN from Actions environment)"
+  aiModel:
     required: false
-    description: "OpenAI model to use for emoji generation"
-    default: "gpt-4.1-mini"
+    description: "AI model to use for emoji generation via GitHub Models"
+    default: "gpt-5.1-nano"
 branding:
   icon: "calendar"
   color: "green"
