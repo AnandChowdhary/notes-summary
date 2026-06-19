@@ -1,3 +1,24 @@
+## v1.7.0 (2026-06-19)
+
+[📝 Release notes](https://github.com/AnandChowdhary/notes-summary/releases/tag/v1.7.0) · [💻 Compare](https://github.com/AnandChowdhary/notes-summary/compare/v1.6.0...v1.7.0) · [🔖 Tag](https://github.com/AnandChowdhary/notes-summary/tree/v1.7.0) · 🗄️ Archive ([zip](https://github.com/AnandChowdhary/notes-summary/archive/v1.7.0.zip) · [tar.gz](https://github.com/AnandChowdhary/notes-summary/archive/v1.7.0.tar.gz))
+
+### ✨ New features
+
+- [`c718edf`](https://github.com/AnandChowdhary/notes-summary/commit/c718edf)  Use GitHub Models
+- [`cca9097`](https://github.com/AnandChowdhary/notes-summary/commit/cca9097)  Add draft attribute support in item parsing
+
+### ♻️ Updates
+
+- [`78129ed`](https://github.com/AnandChowdhary/notes-summary/commit/78129ed)  Enhance item display with draft attribute formatting
+
+### 🐛 Bug fixes
+
+- [`dcfbadb`](https://github.com/AnandChowdhary/notes-summary/commit/dcfbadb)  Remove deprecated githubToken input and update README for input parameters
+
+### ⬆️ Dependency updates
+
+- [`25f9fa9`](https://github.com/AnandChowdhary/notes-summary/commit/25f9fa9)  Bump npm security dependencies and rebuild action bundle
+
 ## v1.6.0 (2025-11-14)
 
 [📝 Release notes](https://github.com/AnandChowdhary/notes-summary/releases/tag/v1.6.0) · [💻 Compare](https://github.com/AnandChowdhary/notes-summary/compare/v1.5.0...v1.6.0) · [🔖 Tag](https://github.com/AnandChowdhary/notes-summary/tree/v1.6.0) · 🗄️ Archive ([zip](https://github.com/AnandChowdhary/notes-summary/archive/v1.6.0.zip) · [tar.gz](https://github.com/AnandChowdhary/notes-summary/archive/v1.6.0.tar.gz))
