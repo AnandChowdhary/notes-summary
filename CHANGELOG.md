@@ -1,3 +1,17 @@
+## v1.7.1 (2026-09-22)
+
+[📝 Release notes](https://github.com/AnandChowdhary/notes-summary/releases/tag/v1.7.1) · [💻 Compare](https://github.com/AnandChowdhary/notes-summary/compare/v1.7.0...v1.7.1) · [🔖 Tag](https://github.com/AnandChowdhary/notes-summary/tree/v1.7.1) · 🗄️ Archive ([zip](https://github.com/AnandChowdhary/notes-summary/archive/v1.7.1.zip) · [tar.gz](https://github.com/AnandChowdhary/notes-summary/archive/v1.7.1.tar.gz))
+
+### 🔒 Security issues
+
+- [`425a03e`](https://github.com/AnandChowdhary/notes-summary/commit/425a03e)  Update Actions core and remove vulnerable UUID (#162)
+(Issues: [`#162`](https://github.com/AnandChowdhary/notes-summary/issues/162))
+
+### ⬆️ Dependency updates
+
+- [`fca431e`](https://github.com/AnandChowdhary/notes-summary/commit/fca431e)  Update GitHub Actions runtimes (#160)
+(Issues: [`#160`](https://github.com/AnandChowdhary/notes-summary/issues/160))
+
 ## v1.7.0 (2026-06-19)
 
 [📝 Release notes](https://github.com/AnandChowdhary/notes-summary/releases/tag/v1.7.0) · [💻 Compare](https://github.com/AnandChowdhary/notes-summary/compare/v1.6.0...v1.7.0) · [🔖 Tag](https://github.com/AnandChowdhary/notes-summary/tree/v1.7.0) · 🗄️ Archive ([zip](https://github.com/AnandChowdhary/notes-summary/archive/v1.7.0.zip) · [tar.gz](https://github.com/AnandChowdhary/notes-summary/archive/v1.7.0.tar.gz))
